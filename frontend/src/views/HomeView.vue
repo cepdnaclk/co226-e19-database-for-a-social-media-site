@@ -20,6 +20,12 @@ const comments = ref([
     content: "dskjhfak akjsdhf askjdfh askdfjh skdfj aksfd kasdfkaskfiweyrozjc",
     no_likes: "1k",
     time: "yesterday"
+  },
+  {
+    name: "Ipsum",
+    content: "dskjhfak akjsdhf askjdfh askdfjh skdfj",
+    no_likes: "1k",
+    time: "yesterday"
   }
 ])
 </script>
