@@ -26,7 +26,7 @@ app.post('/login', (req, res) => {
   const query = `SELECT * FROM user WHERE user_name = ?`;
 
   // Execute the query
-  connection.query(query, [user_name], (error, results) => {
+  db.query(query, [user_name], (error, results) => {
     if (error) {
       // Handle error
       console.error('Error fetching user:', error);
@@ -73,7 +73,7 @@ app.post('/signup', (req, res) => {
     // Check if username is already taken
     const usernameQuery = `SELECT * FROM user WHERE user_name = ?`;
   
-    connection.query(usernameQuery, [user_name], (error, results) => {
+    db.query(usernameQuery, [user_name], (error, results) => {
       if (error) {
         // Handle error
         console.error('Error checking username:', error);
@@ -95,7 +95,7 @@ app.post('/signup', (req, res) => {
             res.status(400).json({ error: 'Passwords do not match' });
           } else {
             // Execute the query to store user data
-            connection.query(
+            db.query(
               addUserQuery,
               [
                 user_name,
@@ -139,7 +139,7 @@ app.get('/profile/:user_name', (req, res) => {
     // Query the user data from the database
     const getUserQuery = `SELECT * FROM user WHERE user_name = ?`;
   
-    connection.query(getUserQuery, [user_name], (error, results) => {
+    db.query(getUserQuery, [user_name], (error, results) => {
       if (error) {
         // Handle error
         console.error('Error retrieving user data:', error);
