@@ -156,6 +156,7 @@ const checkValue = ref()
     background: #2FA634;
     color: white;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .or {
