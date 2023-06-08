@@ -29,7 +29,7 @@
                     <p>OR</p>
                 </div>
                 <div class="footer">
-                    <p>Don’t have an account? <router-link to="/signup">Create one</router-link> </p>
+                    <p>Don’t have an account? <router-link to="/sign-up">Create one</router-link> </p>
                 </div>
             </div>
         </div>
@@ -156,6 +156,7 @@ const checkValue = ref()
     background: #2FA634;
     color: white;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .or {

@@ -3,24 +3,21 @@
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+.container {
+  width: clamp(300px, 90%, 1280px);
+  margin: auto;
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  display: block;
+  padding: 0.5em 1em;
+  border: none;
+  margin: 0.5em 0;
+  background: #eef;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 300;
 }
 </style>
