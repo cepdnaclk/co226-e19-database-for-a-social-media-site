@@ -21,6 +21,7 @@ import { useStore } from 'vuex';
 import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators'
 import { useRouter } from 'vue-router';
+import axios from "axios"
 
 const store = useStore()
 const router = useRouter()
@@ -45,12 +46,22 @@ const validate = useVuelidate(rules, user)
 const submit = async (e) => {
     e.preventDefault()
     await validate.value.$validate()
-    store.state.addUser = {
-        username: user.username,
+    const formData = {
+        user_name: user.username,
         email: user.email,
         password: user.password,
     }
-    router.push("/sign-up/more-about-you")
+
+    await axios
+        .post("http://localhost:3010/signup", formData)
+        .then((res) => {
+            console.log(res)
+            router.push("/sign-up/more-about-you")
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+
 }
 </script>
 

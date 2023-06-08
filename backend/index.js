@@ -80,17 +80,14 @@ app.post("/signup", (req, res) => {
     } else {
       if (results.length > 0) {
         // Username is already taken
-        res
-          .status(400)
-          .json({
-            error:
-              "Username is already taken. Please enter a different username",
-          });
+        res.status(400).json({
+          error: "Username is already taken. Please enter a different username",
+        });
       } else {
         // Username is valid, proceed to store in the database
         // profilePic as link
         // location as google map link
-        const addUserQuery = `INSERT INTO user (user_name, email, password, first_name, last_name, b_date, b_month, b_year, sex, profile_picture, location, affiliation, bio, user_interests) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const addUserQuery = `INSERT INTO user (user_name, email, password, first_name, last_name, b_date, b_month, b_year, sex, profile_picture, location, affiliation, bio, interest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         // Check if passwords match
         if (password !== confirmPassword) {
@@ -122,7 +119,9 @@ app.post("/signup", (req, res) => {
                 res.status(500).json({ error: "Error adding user" });
               } else {
                 // User data stored successfully
-                res.json({ message: "User registration successful" });
+                res
+                  .status(200)
+                  .json({ message: "User registration successfull" });
               }
             }
           );
