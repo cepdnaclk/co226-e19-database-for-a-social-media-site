@@ -7,12 +7,21 @@
                     <div class="progress-line">
                         <div class="progress-fill" :style="`width:${(activeRouteIndex - 1) * 50}%`"></div>
                     </div>
-                    <div :class="`progress-point ${activeRouteIndex > 0 ? 'active' : ''} ${activeRouteIndex === 1 ? 'exactactive' : ''}`"
-                        id="prog1">1</div>
-                    <div :class="`progress-point ${activeRouteIndex > 1 ? 'active' : ''} ${activeRouteIndex === 2 ? 'exactactive' : ''}`"
-                        id="prog2">2</div>
-                    <div :class="`progress-point ${activeRouteIndex > 2 ? 'active' : ''} ${activeRouteIndex === 3 ? 'exactactive' : ''}`"
-                        id="prog3">3</div>
+                    <div
+                        :class="`progress-item ${activeRouteIndex > 0 ? 'active' : ''} ${activeRouteIndex === 1 ? 'exactactive' : ''}`">
+                        <p>Create Account</p>
+                        <div class="progress-point" id="prog1">1</div>
+                    </div>
+                    <div
+                        :class="`progress-item ${activeRouteIndex > 1 ? 'active' : ''} ${activeRouteIndex === 2 ? 'exactactive' : ''}`">
+                        <p>Tell more about you</p>
+                        <div class="progress-point" id="prog2">2</div>
+                    </div>
+                    <div
+                        :class="`progress-item ${activeRouteIndex > 2 ? 'active' : ''} ${activeRouteIndex === 3 ? 'exactactive' : ''}`">
+                        <p>Final step</p>
+                        <div class="progress-point" id="prog3">3</div>
+                    </div>
                 </div>
             </div>
             <div class="body">
@@ -70,6 +79,25 @@ const activeRouteIndex = ref(1)
     align-items: center;
     justify-content: space-between;
     position: relative;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+
+.header .progress-bar .progress-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.header .progress-bar .progress-item p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #888;
+    position: absolute;
+    width: max-content;
+    top: -1.6rem;
 }
 
 .header .progress-bar .progress-point {
@@ -87,11 +115,17 @@ const activeRouteIndex = ref(1)
     transition: 0.5s 1s transform;
 }
 
-.header .progress-bar .progress-point.active {
+.header .progress-bar .progress-item.active .progress-point {
     background: #2FA634;
 }
 
-.header .progress-bar .progress-point.exactactive {
+.header .progress-bar .progress-item.exactactive p {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2FA634;
+}
+
+.header .progress-bar .progress-item.exactactive .progress-point {
     transform: scale(1.2);
 }
 

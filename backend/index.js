@@ -16,6 +16,15 @@ const app = express();
 // Enable JSON request body parsing
 app.use(express.json());
 
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Define a route for user login
 app.post("/login", (req, res) => {
@@ -68,6 +77,8 @@ app.post("/signup", (req, res) => {
     bio,
     user_interests,
   } = req.body;
+
+  console.log(req.body);
 
   // Check if username is already taken
   const usernameQuery = `SELECT * FROM user WHERE user_name = ?`;
