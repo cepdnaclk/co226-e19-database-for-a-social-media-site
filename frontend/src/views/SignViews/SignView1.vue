@@ -1,6 +1,6 @@
 <template>
     <div class="sign">
-        <img src="@/assets/LogoPC.png" alt="">
+        <img class="left" src="@/assets/social.jpg" alt="">
         <form action="">
             <h3>CREATE A NEW ACCOUNT</h3>
             <div class="form-input">
@@ -85,56 +85,14 @@ const submit = async (e) => {
     align-items: center;
 }
 
+.sign .left {
+    width: 50%;
+    height: 500px;
+    object-fit: contain;
+}
+
 .sign form {
     width: 100%;
     max-width: 600px;
-}
-
-.sign .form-input {
-    margin-bottom: 1.5rem;
-}
-
-.sign .form-input input {
-    width: 100%;
-    margin-bottom: 1rem;
-    background: none;
-    border-bottom: 1px solid #ccc;
-    border-radius: 0;
-    padding-inline: 10px;
-    margin: 0;
-}
-
-.sign .form-input input:focus {
-    outline: none;
-    border-width: 2px;
-    border-color: #333;
-}
-
-.sign h3 {
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-bottom: 2rem;
-}
-
-.sign .form-input label {
-    display: block;
-    font-size: 0.9rem;
-    color: #333;
-    margin-bottom: 0.25rem;
-}
-
-.sign button[type="submit"] {
-    padding: 0.5em 1.5em;
-    border-radius: 2rem;
-    border: none;
-    display: block;
-    margin: auto;
-    width: 90%;
-    max-width: 300px;
-    margin-top: 3rem;
-    font-size: 1rem;
-    font-weight: 500;
-    background: #2FA634;
-    color: white;
 }
 </style>

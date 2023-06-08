@@ -32,13 +32,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const activeRouteIndex = ref(1)
+const router = useRouter()
+const activeRouteIndex = computed(() => {
+    return router.currentRoute.value.meta.index
+})
 
 </script>
 
-<style scoped>
+<style>
 .signup {
     position: relative;
     height: 100vh;
@@ -146,5 +150,54 @@ const activeRouteIndex = ref(1)
     width: 50%;
     background: #2FA634;
     transition: 1s all;
+}
+
+.sign .form-input {
+    margin-bottom: 1.5rem;
+}
+
+.sign .form-input input {
+    width: 100%;
+    margin-bottom: 1rem;
+    background: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    padding-inline: 10px;
+    margin: 0;
+}
+
+.sign .form-input input:focus {
+    outline: none;
+    border-width: 2px;
+    border-color: #333;
+}
+
+.sign h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.sign .form-input label {
+    display: block;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.sign button[type="submit"] {
+    padding: 0.5em 1.5em;
+    border-radius: 2rem;
+    border: none;
+    display: block;
+    margin: auto;
+    width: 90%;
+    max-width: 300px;
+    margin-top: 3rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background: #2FA634;
+    color: white;
 }
 </style>

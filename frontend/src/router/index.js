@@ -32,6 +32,20 @@ const routes = [
           import(
             /* webpackChunkName: "sign1" */ "../views/SignViews/SignView1.vue"
           ),
+        meta: {
+          index: 1,
+        },
+      },
+      {
+        name: "signup2",
+        path: "more-about-you",
+        component: () =>
+          import(
+            /* webpackChunkName: "sign2" */ "../views/SignViews/SignView2.vue"
+          ),
+        meta: {
+          index: 2,
+        },
       },
     ],
   },
