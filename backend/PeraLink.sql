@@ -1,11 +1,7 @@
-
-
 --
 -- Database: `peralink`
 --
-
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `comment`
 --
@@ -182,3 +178,46 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 -- insert test user
 INSERT INTO `user` (`u_id`, `user_name`, `password`, `first_name`, `last_name`, `email`, `sex`, `b_year`, `b_month`, `b_date`, `profile_picture`, `location`, `bio`) VALUES (NULL, 'test1', 'test1', 'test', 'test', '', '', '', '', '', '', '', '');
+
+-- Insert sample data into the `user` table
+INSERT INTO `user` (user_name, password, first_name, last_name, email, sex, b_year, b_month, b_date, bio)
+VALUES
+  ('john_doe', 'password123', 'John', 'Doe', 'john.doe@example.com', 1, 1990, 1, 1, 'I am John Doe.'),
+  ('jane_smith', 'password456', 'Jane', 'Smith', 'jane.smith@example.com', 0, 1992, 3, 15, 'I am Jane Smith.');
+  -- Add more sample users
+
+-- Insert sample data into the `friends_with` table
+INSERT INTO `friends_with` (accepter_id, requester_id, acc_date)
+VALUES
+  (2, 1, '2023-01-01'); -- Jane Smith is friends with John Doe
+  -- Add more sample friendships
+
+-- Insert sample data into the `post` table
+INSERT INTO `post` (p_time, p_date, p_month, p_year, content, user_id)
+VALUES
+  ('12:00:00', 1, 1, 2023, 'Hello world!', 1); -- John Doe's post
+  -- Add more sample posts
+
+-- Insert sample data into the `comment` table
+INSERT INTO `comment` (c_time, c_date, c_month, c_year, content, user_id, post_id)
+VALUES
+  ('12:30:00', 1, 1, 2023, 'Nice post!', 2, 1); -- Jane Smith's comment on John Doe's post
+  -- Add more sample comments
+
+-- Insert sample data into the `like_type` table
+INSERT INTO `like_type` (type_name, type_emoji)
+VALUES
+  ('Like', '👍');
+  -- Add more sample like types
+
+-- Insert sample data into the `post_like` table
+INSERT INTO `post_like` (l_time, l_date, l_month, l_year, liketype_id, user_id, post_id)
+VALUES
+  ('12:30:00', 1, 1, 2023, 1, 2, 1); -- Jane Smith's like on John Doe's post
+  -- Add more sample post likes
+
+-- Insert sample data into the `comment_like` table
+INSERT INTO `comment_like` (l_time, l_date, l_month, l_year, liketype_id, user_id, comment_id)
+VALUES
+  ('12:30:00', 1, 1, 2023, 1, 2, 1); -- Jane Smith's like on John Doe's comment
+  -- Add more sample comment likes
