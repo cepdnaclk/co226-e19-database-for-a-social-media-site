@@ -1,6 +1,6 @@
 <template>
     <div class="sign">
-        <img src="@/assets/Logo.png" alt="">
+        <img src="@/assets/LogoPC.png" alt="">
         <form action="">
             <h3>CREATE A NEW ACCOUNT</h3>
             <div class="form-input">
