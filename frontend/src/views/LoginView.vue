@@ -126,6 +126,8 @@ const checkValue = ref()
     height: 40px;
     width: calc(100% - 40px);
     font-size: 1rem;
+    margin: 0;
+    border-radius: 0;
 }
 
 .container .right .txt-input input::placeholder {
@@ -198,9 +200,15 @@ const checkValue = ref()
 }
 
 @media screen and (max-width: 769px) {
+    .login {
+        background: none;
+    }
+
     .container {
         flex-direction: column;
         height: 90vh;
+        box-shadow: none;
+        width: 100%;
     }
 
     .container>* {

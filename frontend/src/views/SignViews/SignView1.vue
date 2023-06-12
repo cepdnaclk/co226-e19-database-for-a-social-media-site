@@ -22,7 +22,13 @@
                 <label for="">Confirm Password</label>
                 <input type="password" placeholder="same as previous one" v-model="user.rpassword">
                 <p v-if="validate.rpassword.$error">{{ validate.rpassword.$errors[0].$message }}</p>
-                <button type="submit" @click="submit">Create Account</button>
+            </div>
+            <button type="submit" @click="submit">Create Account</button>
+            <div class="or">
+                <p>OR</p>
+            </div>
+            <div class="footer">
+                <p>Allready have an account? <router-link to="/login">Login</router-link> </p>
             </div>
         </form>
     </div>
@@ -94,5 +100,48 @@ const submit = async (e) => {
 .sign form {
     width: 100%;
     max-width: 600px;
+}
+
+.or {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    z-index: 2;
+}
+
+.or::before {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    content: '';
+    height: 1px;
+    width: 100%;
+    background: #00000011;
+    z-index: -1;
+}
+
+.or p {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    background: white;
+}
+
+.footer {
+    margin-top: 0rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.footer a {
+    color: #2FA634;
+}
+
+@media screen and (max-width: 769px) {
+    .sign .left {
+        display: none;
+    }
 }
 </style>
