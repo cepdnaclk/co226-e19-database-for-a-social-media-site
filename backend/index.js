@@ -5,6 +5,7 @@
 const express = require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
+const secret = require("./JWTconfig");
 
 //create connection
 const db = mysql.createConnection({
@@ -33,7 +34,7 @@ app.use(function (req, res, next) {
 module.exports = db;
 
 // routes
-const login = require("./login")(db); // route for login
+const login = require("./login")(db, secret.secreteKey); // route for login
 const signup = require("./signup")(db); // route for signup
 const additional_info = require("./additional_info")(db); // route for additional account info
 const search_friend = require("./search_friend")(db); // route for search and view profiles of friends

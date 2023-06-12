@@ -64,7 +64,10 @@ const validate = useVuelidate(rules, user)
 
 const submit = async (e) => {
     e.preventDefault()
-    await validate.value.$validate()
+    const pass = await validate.value.$validate()
+    if (!pass)
+        return
+
     const formData = {
         user_name: user.username,
         email: user.email,
@@ -72,8 +75,8 @@ const submit = async (e) => {
         confirmPassword: user.rpassword,
     }
 
-    await axios
-        .post("http://localhost:3010/signup", formData)
+    axios
+        .post("/signup", formData)
         .then((res) => {
             console.log(res)
             router.push("/sign-up/more-about-you")
@@ -81,7 +84,6 @@ const submit = async (e) => {
         .catch((err) => {
             console.log(err)
         })
-
 }
 </script>
 

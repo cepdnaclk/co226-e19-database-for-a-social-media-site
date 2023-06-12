@@ -36,7 +36,7 @@ const route = (db, secretKey) => {
                 const payload = { user_id: user.id, user_name: user.user_name };
                 const options = { expiresIn: "1h" };
                 const token = jwt.sign(payload, secretKey, options);
-                res.json({ token });
+                res.json({ token, user });
               } else {
                 // Incorrect password
                 res.status(401).json({ error: "Incorrect password" });

@@ -5,20 +5,22 @@
                 <img src="@/assets/LogoPC.png" alt="">
                 <h4>Revive! Re Imagine! Re Connect!</h4>
             </div>
-            <div class="right">
+            <form class="right" @submit="login">
                 <h3>Login</h3>
                 <div class="txt-input">
                     <div class="badge">
                         <img src="@/assets/user.png" alt="">
                     </div>
-                    <input type="text" name="username" placeholder="Username">
+                    <input type="text" name="username" placeholder="Username" v-model="user.user_name">
                 </div>
+                <p class="err" v-if="validate.user_name.$error">{{ validate.user_name.$errors[0].$message }}</p>
                 <div class="txt-input">
                     <div class="badge">
                         <img src="@/assets/pass.png" alt="">
                     </div>
-                    <input type="password" name="password" placeholder="Password">
+                    <input type="password" name="password" placeholder="Password" v-model="user.password">
                 </div>
+                <p class="err" v-if="validate.password.$error">{{ validate.password.$errors[0].$message }}</p>
                 <div class="flex">
                     <compCheckbox id="rem" v-model="checkValue">
                         Remember me</compCheckbox>
@@ -31,16 +33,49 @@
                 <div class="footer">
                     <p>Don’t have an account? <router-link to="/sign-up">Create one</router-link> </p>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>
 
 <script setup>
-import compCheckbox from '@/components/compCheckbox.vue';
-import { ref } from 'vue';
+import compCheckbox from '@/components/compCheckbox.vue'
+import { ref, reactive } from 'vue';
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { useStore } from 'vuex'
+import axios from 'axios'
 
 const checkValue = ref()
+const user = reactive({
+    user_name: '',
+    password: ''
+})
+const rule = {
+    user_name: { required },
+    password: { required }
+}
+
+const validate = useVuelidate(rule, user)
+const store = useStore()
+
+const login = async (e) => {
+    e.preventDefault();
+    const pass = await validate.value.$validate()
+    if (!pass)
+        return
+
+    axios
+        .post("/login", user)
+        .then((res) => {
+            store.commit('setLogin', { token: res.data.token, user: res.data.user })
+            console.log(store.state)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+}
+
 </script>
 
 <style scoped>
@@ -103,7 +138,7 @@ const checkValue = ref()
     border: 1px solid #B6B6B6;
     width: 100%;
     max-width: 350px;
-    margin-bottom: 1rem;
+    margin-top: 1rem;
     overflow: hidden;
 }
 
@@ -134,6 +169,15 @@ const checkValue = ref()
     font-weight: 300;
 }
 
+p.err {
+    font-size: 0.8rem;
+    color: red;
+    text-align: left;
+    margin-top: 5px;
+    width: 100%;
+    max-width: 350px;
+}
+
 .container .right .flex {
     display: flex;
     align-items: center;
@@ -141,6 +185,7 @@ const checkValue = ref()
     width: 100%;
     max-width: 350px;
     font-size: 0.9rem;
+    margin-top: 1rem;
 }
 
 .container .right .flex a {
