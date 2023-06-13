@@ -1,16 +1,17 @@
 ////////////////////////// signup.js
 const express = require("express");
+const bcrypt = require("bcrypt");
 const router = express.Router();
 
 // Define a route for user sign up with database connection
 const route = (db) => {
-  router.post("/", (req, res) => {
+  router.post("/", async (req, res) => {
     const { user_name, email, password, confirmPassword } = req.body;
 
     // Check if username is already taken
     const usernameQuery = `SELECT * FROM user WHERE user_name = ?`;
 
-    db.query(usernameQuery, [user_name], (error, results) => {
+    db.query(usernameQuery, [user_name], async (error, results) => {
       if (error) {
         // Handle error
         console.error("Error checking username:", error);
@@ -32,9 +33,12 @@ const route = (db) => {
             res.status(400).json({ error: "Passwords do not match" });
           } else {
             // Execute the query to store user data
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(password, salt);
+
             db.query(
               addUserQuery,
-              [user_name, email, password],
+              [user_name, email, hashPassword],
               (error, result) => {
                 if (error) {
                   // Handle error

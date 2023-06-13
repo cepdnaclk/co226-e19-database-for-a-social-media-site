@@ -27,6 +27,7 @@
             <div class="body">
                 <router-view />
             </div>
+            <p class="copyright">Copyright PeraLink 2023</p>
         </div>
     </div>
 </template>
@@ -45,7 +46,7 @@ const activeRouteIndex = computed(() => {
 <style>
 .signup {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
@@ -186,6 +187,12 @@ const activeRouteIndex = computed(() => {
     margin-bottom: 0.25rem;
 }
 
+.sign .form-input p {
+    font-size: 0.8rem;
+    color: red;
+    margin-top: 5px;
+}
+
 .sign button[type="submit"] {
     padding: 0.5em 1.5em;
     border-radius: 2rem;
@@ -199,5 +206,42 @@ const activeRouteIndex = computed(() => {
     font-weight: 500;
     background: #2FA634;
     color: white;
+}
+
+.copyright {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: white;
+}
+
+@media screen and (max-width: 769px) {
+    .signup {
+        padding: 1rem 0;
+    }
+
+    .signup .bg {
+        display: none;
+    }
+
+    .signup h3 {
+        margin: 1rem 0 2rem;
+    }
+
+    .signup .logo {
+        height: 75px;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .signup .header {
+        display: none;
+    }
+
+    .copyright {
+        color: #555;
+    }
 }
 </style>
