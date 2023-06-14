@@ -20,4 +20,8 @@ input[type="email"] {
   font-size: 1rem;
   font-weight: 300;
 }
+
+button {
+  cursor: pointer;
+}
 </style>

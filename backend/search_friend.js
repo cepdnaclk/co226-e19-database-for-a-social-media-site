@@ -1,14 +1,13 @@
 ///////////////////////////////////////////// search_friend.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-
 // API endpoint for searching and retrieving friend profiles a with db connection
-const route = (db)=>{
-router.get('/', (req, res) => {
+const route = (db) => {
+  router.get("/", (req, res) => {
     const searchQuery = req.query.q; // search query is passed as a query parameter
     const u_id = req.query.u_id; // user ID is passed as a query parameter
-  
+
     // Retrieve friend profiles from the 'user' table based on the search query
     const query = `
     SELECT u.user_name,u.first_name, u.last_name, u.email, u.location, u.affiliation, u.bio, u.interest
@@ -19,16 +18,18 @@ router.get('/', (req, res) => {
     const searchValue = `%${searchQuery}%`;
     db.query(query, [u_id, searchValue, searchValue], (err, results) => {
       if (err) {
-        console.error('Error retrieving friend profiles from the database:', err);
-        res.status(500).json({ error: 'Failed to retrieve friend profiles' });
+        console.error(
+          "Error retrieving friend profiles from the database:",
+          err
+        );
+        res.status(500).json({ error: "Failed to retrieve friend profiles" });
       } else {
         const profiles = results;
-  
+
         res.json(profiles);
       }
     });
   });
   return router;
-
 };
-module.exports = route; 
+module.exports = route;

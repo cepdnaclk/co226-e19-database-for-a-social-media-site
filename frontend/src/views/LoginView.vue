@@ -69,7 +69,6 @@ const login = async (e) => {
         .post("/login", user)
         .then((res) => {
             store.commit('setLogin', { token: res.data.token, user: res.data.user })
-            console.log(store.state)
         })
         .catch((err) => {
             console.log(err)
