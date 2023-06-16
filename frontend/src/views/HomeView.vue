@@ -25,12 +25,17 @@ import { ref } from "vue";
 </script>
 
 <style scoped>
+.home {
+  padding-top: 4rem;
+}
+
 .nav-bar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 100;
+  background: white;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.151);
 }
 

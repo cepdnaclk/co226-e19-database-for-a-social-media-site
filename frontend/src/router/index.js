@@ -6,6 +6,14 @@ const routes = [
     path: "/",
     name: "home",
     component: HomeView,
+    children: [
+      {
+        path: "",
+        name: "dash",
+        component: () =>
+          import(/* webpackChunkName: "dash" */ "../views/main/DashView.vue"),
+      },
+    ],
   },
   {
     path: "/about",

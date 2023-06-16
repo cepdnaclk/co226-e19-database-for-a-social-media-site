@@ -8,6 +8,10 @@
   margin: auto;
 }
 
+.flex-box {
+  display: flex;
+}
+
 input[type="text"],
 input[type="password"],
 input[type="email"] {
