@@ -98,12 +98,14 @@ CREATE TABLE IF NOT EXISTS `like_type` (
 DROP TABLE IF EXISTS `post`;
 
 CREATE TABLE IF NOT EXISTS `post` (
-  `p_id` int NOT NULL auto_increment,
+  `p_id` int NOT NULL auto_increment, 
   `p_time` time NOT NULL,
   `p_date` int NOT NULL,
   `p_month` int NOT NULL,
   `p_year` int NOT NULL,
+  `p_img` varchar(255) NULL,
   `content` text NOT NULL,
+  `p_tags` text NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`p_id`),
   FOREIGN KEY (user_id) REFERENCES user(u_id) ON DELETE CASCADE ON UPDATE CASCADE
