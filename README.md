@@ -42,7 +42,7 @@ To get started with PeraLink, follow these steps:
 
 ## Contributing
 
-We welcome contributions to PeraLink! If you find a bug or have a suggestion for improvement, please submit an issue or create a pull request. We appreciate your feedback and contributions.
+We appreciate your suggestions for improvement and feedbacks.
 
 ## License
 
