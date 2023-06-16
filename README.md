@@ -38,11 +38,11 @@ To get started with PeraLink, follow these steps:
    npm run start
    ```
 
-5. Access the application in your browser at `http://localhost:3000`.
+5. Access the application in your browser at `http://localhost:3010`.
 
 ## Contributing
 
-We appreciate your suggestions for improvement and feedbacks.
+We appreciate your feedbacks and suggestions for improvement.
 
 ## License
 
