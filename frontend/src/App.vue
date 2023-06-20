@@ -27,5 +27,7 @@ input[type="email"] {
 
 button {
   cursor: pointer;
+  background: none;
+  border: none;
 }
 </style>

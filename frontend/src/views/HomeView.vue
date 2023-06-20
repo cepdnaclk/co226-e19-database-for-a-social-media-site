@@ -8,11 +8,9 @@
         </div>
         <div class="links">
           <router-link to="/"><img src="@/assets/Home_light.png" alt=""></router-link>
-          <router-link to="/freinds"><img src="@/assets/Group_light.png" alt=""></router-link>
+          <router-link to="/friends"><img src="@/assets/Group_light.png" alt=""></router-link>
         </div>
-        <button class="profile">
-          <img src="@/assets/logo.png" alt="">
-        </button>
+        <comp-pop-menu />
       </div>
     </div>
     <router-view></router-view>
@@ -21,6 +19,7 @@
 
 <script setup>
 import { ref } from "vue";
+import compPopMenu from "@/components/compPopMenu.vue";
 
 </script>
 
@@ -70,22 +69,25 @@ import { ref } from "vue";
 .links a {
   display: flex;
   align-items: baseline;
+  border-bottom: 2px solid transparent;
+  transition: 0.5s all;
+}
+
+.links a.router-link-active.router-link-exact-active {
+  border-bottom: 2px solid #2FA634;
 }
 
 .links img {
   height: 2rem;
 }
 
-.nav-bar .profile {
-  height: 2.5rem;
-  width: 2.5rem;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid #2FA634;
-}
+@media screen and (max-width: 769px) {
+  .nav-bar .container {
+    padding: 0 1rem;
+  }
 
-.nav-bar .profile img {
-  height: 100%;
-  object-fit: cover;
+  .nav-bar .logo h3 {
+    display: none;
+  }
 }
 </style>

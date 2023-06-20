@@ -10,7 +10,7 @@
             </p>
             <div class="footer">
                 <p>{{ props.comment.no_likes }}</p>
-                <button>Like</button>
+                <comp-com-like-menu />
                 <button>Reply</button>
                 <p>{{ props.comment.time }}</p>
             </div>
@@ -20,6 +20,7 @@
 
 <script setup>
 import { defineProps } from "vue";
+import compComLikeMenu from "./compComLikeMenu.vue";
 
 const props = defineProps(['comment']);
 

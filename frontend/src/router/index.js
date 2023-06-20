@@ -13,6 +13,14 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "dash" */ "../views/main/DashView.vue"),
       },
+      {
+        path: "/friends",
+        name: "friends",
+        component: () =>
+          import(
+            /* webpackChunkName: "dash" */ "../views/main/FriendsView.vue"
+          ),
+      },
     ],
   },
   {
