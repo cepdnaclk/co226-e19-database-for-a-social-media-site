@@ -36,7 +36,7 @@ module.exports = db;
 // routes
 const login = require("./login")(db, secret.secreteKey); // route for login
 const signup = require("./signup")(db); // route for signup
-const additional_info = require("./additional_info")(db); // route for additional account info
+const update_profile = require("./update_profile")(db); // route for additional account info
 const search_friend = require("./search_friend")(db); // route for search and view profiles of friends
 const search_global = require("./search_global")(db); // route for search and view profiles of any user
 const post_feed = require("./post_feed")(db); // route for post feed
@@ -44,7 +44,7 @@ const post_feed = require("./post_feed")(db); // route for post feed
 // Use the routes
 app.use("/login", login);
 app.use("/signup", signup);
-app.use("/additional_info", additional_info);
+app.use("/update_profile", update_profile);
 app.use("/search_friend", search_friend);
 app.use("/search_global", search_global);
 app.use("/post_feed", post_feed);
