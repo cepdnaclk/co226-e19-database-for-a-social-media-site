@@ -3,9 +3,7 @@
         <div class="container">
             <div class="flex-box">
                 <div class="post-deck">
-                    <comp-post />
-                    <comp-post />
-                    <comp-post />
+                    <comp-post v-for="post in posts" :key="post.id" :post="post" />
                 </div>
                 <div class="comm-deck">
                     <comp-comment :comment="comment" />
@@ -16,9 +14,27 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import compPost from '@/components/compPost.vue';
 import compComment from '@/components/compComment.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+
+const posts = ref([])
+
+const getPosts = async () => {
+    try {
+        const result = await axios.get(`/post_feed/?u_id=${1}`);
+        console.log(result.data)
+        return result.data
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+onMounted(async () => {
+    posts.value = await getPosts()
+})
 
 const comment = ref({
     name: "funkybird",

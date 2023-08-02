@@ -3,18 +3,16 @@
         <div class="post-header">
             <div class="profile">
                 <img src="" alt="">
-                <h4>Funkybird</h4>
-                <p>@funckybird</p>
+                <h4>{{ props.post.fname + " " + props.post.lname }}</h4>
+                <p>@{{ props.post.uname }}</p>
             </div>
             <div class="date">
                 <img src="@/assets/Time_light.png" alt="">
-                <p>26 May</p>
+                <p>{{ props.post.date }}</p>
             </div>
         </div>
         <div class="post-text">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores suscipit modi voluptates
-                quasi. Non totam accusantium consequatur ipsa quibusdam ad libero. Ipsa, ipsam tempora totam
-                repellendus ab autem consequuntur quibusdam.</p>
+            <p>{{ props.post.content }}</p>
         </div>
         <div class="image-content">
             <img src="@/assets/_add558a1-c25c-47a9-8a6e-67ca5f1dce1d.jpg" alt="">
@@ -27,10 +25,10 @@
         <button class="post-footer">
             <div class="likes">
                 <img src="@/assets/heart-fill.png" alt="">
-                <span>1k</span>
+                <span>{{ props.post.likeCount }}</span>
             </div>
             <div class="comments">
-                <span>12 Comments</span>
+                <span>{{ props.post.commentCount }} comments</span>
             </div>
         </button>
     </div>
