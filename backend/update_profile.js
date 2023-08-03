@@ -7,6 +7,7 @@ const router = express.Router();
 const route = (db)=>{
 router.post("/", (req, res) => {
     const {
+      u_id,
       first_name,
       last_name,
       email,
@@ -18,18 +19,32 @@ router.post("/", (req, res) => {
       location,
       affiliation,
       bio,
-      interests
+      interest
     } = req.body;
   
     
       // profilePic as link
       // location as google map link
-      const addUserQuery = `INSERT INTO user (first_name,last_name,email,password,b_year,b_month,b_date,profile_picture, location, affiliation, bio, interests) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const addUserQuery = `INSERT INTO user (u_id,first_name,last_name,email,password,b_year,b_month,b_date,profile_picture, location, affiliation, bio, interest) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        first_name = VALUES(first_name),
+        last_name = VALUES(last_name),
+        email = VALUES(email),
+        password = VALUES(password),
+        b_year = VALUES(b_year),
+        b_month = VALUES(b_month),
+        b_date = VALUES(b_date),
+        profile_picture = VALUES(profile_picture),
+        location = VALUES(location),
+        affiliation = VALUES(affiliation),
+        bio = VALUES(bio),
+        interest = VALUES(interest)`;
 
         // Execute the query to store additional user data
         db.query(
           addUserQuery,
           [
+            u_id,
             first_name,
             last_name,
             email,
@@ -41,7 +56,7 @@ router.post("/", (req, res) => {
             location,
             affiliation,
             bio,
-            interests
+            interest
           ],
           (error, result) => {
             if (error) {
