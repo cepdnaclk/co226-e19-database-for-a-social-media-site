@@ -40,6 +40,7 @@ const update_profile = require("./update_profile")(db); // route for additional 
 const search_friend = require("./search_friend")(db); // route for search and view profiles of friends
 const search_global = require("./search_global")(db); // route for search and view profiles of any user
 const post_feed = require("./post_feed")(db); // route for post feed
+const profile_picture = require("./profile_picture")(db); // route for handling profile pics
 
 // Use the routes
 app.use("/login", login);
@@ -48,6 +49,7 @@ app.use("/update_profile", update_profile);
 app.use("/search_friend", search_friend);
 app.use("/search_global", search_global);
 app.use("/post_feed", post_feed);
+app.use("/profile_picture", profile_picture);
 
 // Start the server
 const port = 3010;

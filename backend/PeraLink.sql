@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `b_year` year(4) DEFAULT NULL,
   `b_month` int(11) DEFAULT NULL,
   `b_date` int(11) DEFAULT NULL,
-  `profile_picture` int(11) DEFAULT NULL,
+  `profile_picture` text DEFAULT NULL,
   `location` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `affiliation` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `bio` text COLLATE utf8mb4_bin DEFAULT NULL,
