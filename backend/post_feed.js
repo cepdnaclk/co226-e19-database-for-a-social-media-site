@@ -1,11 +1,12 @@
 /////////////////// post_feed.js
 const express = require("express");
 const router = express.Router();
+const auth = require("./authMiddleware");
 
 // API endpoint for retrieving the post feed and connection with db
 const route = (db) => {
-  router.get("/", (req, res) => {
-    const u_id = req.query.u_id; //user ID is passed as a query parameter
+  router.get("/", auth, (req, res) => {
+    const u_id = req.user.u_id; //user ID is passed as a query parameter
 
     // Retrieve posts from friends only
     const query = `

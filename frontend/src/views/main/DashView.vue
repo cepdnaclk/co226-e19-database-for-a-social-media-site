@@ -8,12 +8,14 @@
                 <div class="comm-deck">
                     <div class="friends">
                         <h2>Friends</h2>
-                        <router-link :to="`profile/${friend.user_name}`" class="profile" v-for="friend in friends"
-                            :key="friend.user_name">
-                            <img src="" alt="">
-                            <h4>{{ friend.first_name + " " + friend.last_name }}</h4>
-                            <p>@{{ friend.user_name }}</p>
-                        </router-link>
+                        <div class="friend-deck">
+                            <router-link :to="`profile/${friend.user_name}`" class="profile" v-for="friend in friends"
+                                :key="friend.user_name">
+                                <img src="" alt="">
+                                <h4>{{ friend.first_name + " " + friend.last_name }}</h4>
+                                <p>@{{ friend.user_name }}</p>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -32,7 +34,7 @@ const friends = ref([])
 
 const getPosts = async () => {
     try {
-        const result = await axios.get(`/post_feed/?u_id=${2}`);
+        const result = await axios.get(`/post_feed/`);
         return result.data
     }
     catch (err) {
@@ -42,7 +44,7 @@ const getPosts = async () => {
 
 const getFriends = async () => {
     try {
-        const result = await axios.get(`/search_friend/?u_id=${2}`);
+        const result = await axios.get(`/search_friend/all`);
         console.log(result.data)
         return result.data
     }
@@ -85,6 +87,11 @@ onMounted(async () => {
 
 .friends h2 {
     margin-bottom: 2rem;
+}
+
+.friends .friend-deck {
+    height: 70vh;
+    overflow-y: scroll;
 }
 
 .friends .profile {
