@@ -83,7 +83,7 @@ const submit = async (e) => {
             router.push("/sign-up/more-about-you")
         })
         .catch((err) => {
-            console.log(err.response.data.error)
+            store.commit("addError", err.response.data.error)
         })
 }
 </script>

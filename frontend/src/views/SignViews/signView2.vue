@@ -41,9 +41,16 @@
 import { computed, ref, watch } from 'vue';
 import axios from 'axios';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 
 const store = useStore()
+const router = useRouter()
+
+window.history.pushState(null, null, window.location.href);
+window.onpopstate = function (event) {
+    window.history.pushState(null, null, window.location.href);
+};
 
 const fname = ref("")
 const lname = ref("")
@@ -83,7 +90,7 @@ const Locations = computed(async () => {
         return locations
 
     } catch (error) {
-        console.error('Error:', error.message);
+        store.commit("addError", error);
     }
 })
 
@@ -114,11 +121,10 @@ const submit = () => {
         .post("/signup/more", submitData.value)
         .then((res) => {
             console.log(res.data.message)
-            store.state.currentSignupUser = res.data.u_id
-            // router.push("/sign-up/more-about-you")
+            router.push("/sign-up/finalize")
         })
         .catch((err) => {
-            console.log(err.response.data.error)
+            store.commit("addError", err.response.data.error)
         })
 }
 

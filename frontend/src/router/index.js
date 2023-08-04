@@ -63,6 +63,17 @@ const routes = [
           index: 2,
         },
       },
+      {
+        name: "signup3",
+        path: "finalize",
+        component: () =>
+          import(
+            /* webpackChunkName: "sign3" */ "../views/SignViews/SignView3.vue"
+          ),
+        meta: {
+          index: 3,
+        },
+      },
     ],
   },
 ];
