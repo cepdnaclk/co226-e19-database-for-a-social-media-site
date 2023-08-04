@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import axios from "axios";
 
 export default createStore({
   state: {
@@ -11,6 +12,7 @@ export default createStore({
       state.token = payload.token;
       state.isAuthenticated = true;
       state.user = payload.user;
+      axios.defaults.headers = { Authorization: payload.token };
     },
   },
 });
