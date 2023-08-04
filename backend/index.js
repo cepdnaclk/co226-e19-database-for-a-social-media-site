@@ -41,6 +41,11 @@ const search_friend = require("./search_friend")(db); // route for search and vi
 const search_global = require("./search_global")(db); // route for search and view profiles of any user
 const post_feed = require("./post_feed")(db); // route for post feed
 const profile_picture = require("./profile_picture")(db); // route for handling profile pics
+const post = require("./post")(db); // route for post handling
+const post_like = require("./post_like")(db); // route for like handling related to posts
+const comment_like = require("./comment_like")(db); // route for like handling related to comments
+
+
 
 // Use the routes
 app.use("/login", login);
@@ -50,6 +55,12 @@ app.use("/search_friend", search_friend);
 app.use("/search_global", search_global);
 app.use("/post_feed", post_feed);
 app.use("/profile_picture", profile_picture);
+app.use("/post", post);
+app.use("/post_like", post_like);
+app.use("/comment_like", comment_like);
+
+
+
 
 // Start the server
 const port = 3010;
