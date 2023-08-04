@@ -46,7 +46,10 @@ const route = (db) => {
                   res.status(500).json({ error: "Error adding user" });
                 } else {
                   // User data stored successfully
-                  res.json({ message: "User registration successful" });
+                  res.json({
+                    message: "User registration successful",
+                    u_id: result.insertId,
+                  });
                 }
               }
             );
@@ -55,6 +58,48 @@ const route = (db) => {
       }
     });
   });
+
+  router.post("/more", (req, res) => {
+    const {
+      u_id,
+      first_name,
+      last_name,
+      sex,
+      b_year,
+      b_month,
+      b_date,
+      location,
+    } = req.body;
+
+    // profilePic as link
+    // location as google map link
+    const addUserQuery = `UPDATE user
+    SET first_name = ?,
+        last_name = ?,
+        sex = ?,
+        b_year = ?,
+        b_month = ?,
+        b_date = ?,
+        location = ?
+    WHERE u_id = ?;`;
+
+    // Execute the query to store additional user data
+    db.query(
+      addUserQuery,
+      [first_name, last_name, sex, b_year, b_month, b_date, location, u_id],
+      (error, result) => {
+        if (error) {
+          // Handle error
+          console.error("Error updating the user:", error);
+          res.status(500).json({ error: "Error error updating user" });
+        } else {
+          // User data stored successfully
+          res.json({ message: "User info update successful" });
+        }
+      }
+    );
+  });
+
   return router;
 };
 module.exports = route;
