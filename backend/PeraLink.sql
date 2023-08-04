@@ -185,6 +185,7 @@ INSERT INTO `like_type` (`type_id`, `type_name`, `type_emoji`) VALUES
 DROP TABLE IF EXISTS `post`;
 CREATE TABLE IF NOT EXISTS `post` (
   `p_id` int(11) NOT NULL AUTO_INCREMENT,
+  `p_title` varchar(255) NULL,
   `p_time` time NOT NULL,
   `p_date` int(11) NOT NULL,
   `p_month` int(11) NOT NULL,
