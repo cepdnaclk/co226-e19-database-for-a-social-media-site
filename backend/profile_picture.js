@@ -49,20 +49,24 @@ const route = (db, server) => {
     upload.single("profile_picture"),
     (req, res) => {
       const userId = req.body.u_id; // Assuming the user ID is provided in the request body
-      const imagePath = server + req.file.path.replace("\\", "/");
-      db.query(
-        "UPDATE user SET profile_picture = ? WHERE u_id = ?",
-        [imagePath, userId],
-        (err, results) => {
-          if (err) {
-            console.log(err);
-            return res.status(500).json({ error: "Database error" });
+      if (req.file) {
+        const imagePath = server + req.file.path.replace("\\", "/");
+        db.query(
+          "UPDATE user SET profile_picture = ? WHERE u_id = ?",
+          [imagePath, userId],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({ error: "Database error" });
+            }
+            res
+              .status(200)
+              .json({ message: "Profile picture uploaded successfully" });
           }
-          res
-            .status(200)
-            .json({ message: "Profile picture uploaded successfully" });
-        }
-      );
+        );
+      } else {
+        res.status(200).json({ message: "Nothing to update" });
+      }
     }
   );
 

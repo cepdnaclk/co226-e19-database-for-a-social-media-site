@@ -100,6 +100,82 @@ const route = (db) => {
     );
   });
 
+  router.post("/final", (req, res) => {
+    const { u_id, bio, affiliation, interests } = req.body;
+    // Update user's bio
+    const updateUserBioQuery = `UPDATE user
+                                SET bio = ?,
+                                affiliation = ?
+                                WHERE u_id = ?;`;
+
+    // Update user's bio in the user table
+    db.query(
+      updateUserBioQuery,
+      [bio, affiliation, u_id],
+      (bioError, bioResult) => {
+        if (bioError) {
+          console.error("Error updating user bio:", bioError);
+          return res.status(500).json({ error: "Error updating user bio" });
+        }
+
+        // Delete existing user interests
+        const deleteInterestsQuery = `DELETE FROM user_interests
+                                    WHERE user_id = ?;`;
+
+        db.query(deleteInterestsQuery, [u_id], (deleteError, deleteResult) => {
+          if (deleteError) {
+            console.error("Error deleting user interests:", deleteError);
+            return res
+              .status(500)
+              .json({ error: "Error deleting user interests" });
+          }
+
+          // Insert new user interests
+          if (interests && interests.length > 0) {
+            console.log(interests.length);
+            const insertInterestQuery = `INSERT INTO user_interests (user_id, interest)
+                                       VALUES (?, ?);`;
+
+            const interestValues = interests.map((interest) => [
+              u_id,
+              interest,
+            ]);
+
+            let completedQueries = 0;
+            const totalQueries = interestValues.length;
+
+            interestValues.forEach((interest) => {
+              db.query(
+                insertInterestQuery,
+                interest,
+                (insertError, insertResult) => {
+                  if (insertError) {
+                    console.error(
+                      "Error inserting user interests:",
+                      insertError
+                    );
+                    return res
+                      .status(500)
+                      .json({ error: "Error inserting user interests" });
+                  }
+
+                  completedQueries++;
+
+                  if (completedQueries === totalQueries) {
+                    // All queries are completed, send the response
+                    res.json({ message: "User info update successful" });
+                  }
+                }
+              );
+            });
+          } else {
+            res.json({ message: "User info update successful" });
+          }
+        });
+      }
+    );
+  });
+
   return router;
 };
 module.exports = route;

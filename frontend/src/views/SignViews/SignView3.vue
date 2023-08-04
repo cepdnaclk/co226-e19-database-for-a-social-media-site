@@ -21,10 +21,11 @@
                 <label>Interests</label>
                 <input type="text" placeholder="sports" v-model="searchText">
                 <div class="deck">
-                    <div class="pill" v-for="(interest, index) in filterInterest" :key="index">
-                        <input :id="`int${index}`" type="checkbox" :value="interest" v-model="interests">
+                    <div class="pill" v-for="(interest, index) in interestsList" :key="index">
+                        <input :id="`int${index}`" type="checkbox" :value="interest.interest" @input="selectInterest(index)"
+                            :checked="interest.checked">
                         <label :for="`int${index}`">
-                            <span>{{ interest }}</span>
+                            <span>{{ interest.interest }}</span>
                             <img src="../../assets/check.png" alt="">
                         </label>
                     </div>
@@ -54,119 +55,131 @@ const fileHandle = (e) => {
     hasImg.value = "hasimg"
 }
 
-const interestsList = [
-    "Sports",
-    "Music",
-    "Art",
-    "Cooking",
-    "Travel",
-    "Technology",
-    "Fashion",
-    "Photography",
-    "Reading",
-    "Gaming",
-    "Fitness",
-    "Movies",
-    "Dancing",
-    "Nature",
-    "Writing",
-    "Science",
-    "History",
-    "Cycling",
-    "Yoga",
-    "DIY",
-    "Animals",
-    "Hiking",
-    "Singing",
-    "Swimming",
-    "Cars",
-    "Drawing",
-    "Coding",
-    "Languages",
-    "Mathematics",
-    "Food",
-    "Coffee",
-    "Tea",
-    "Pets",
-    "Cooking",
-    "Baking",
-    "Gardening",
-    "Vintage",
-    "Fashion",
-    "Shopping",
-    "Volunteering",
-    "Crafts",
-    "Board Games",
-    "Puzzles",
-    "Mindfulness",
-    "Meditation",
-    "Running",
-    "Surfing",
-    "Skating",
-    "Skydiving",
-    "Skiing",
-    "Snowboarding",
-    "Horseback Riding",
-    "Camping",
-    "Concerts",
-    "Theater",
-    "Musicals",
-    "Comedy",
-    "History",
-    "Politics",
-    "Documentaries",
-    "Podcasts",
-    "Cooking Shows",
-    "Outdoor Adventures",
-    "Fashion Design",
-    "Interior Design",
-    "Sculpting",
-    "Pottery",
-    "Calligraphy",
-    "Archery",
-    "Fishing",
-    "Chess",
-    "Billiards",
-    "Painting",
-    "Origami",
-    "Film-making",
-    "Stargazing",
-    "Astronomy",
-    "Model Building",
-    "Woodworking",
-    "Virtual Reality",
-    "Robotics",
-    "Gardening",
-    "Rock Climbing",
-    "Fitness Training",
-    "Online Courses",
-    "Space Exploration",
-    "Antique Collecting",
-    "Fashion Photography",
-    "Graphic Design",
-    "Cookbook Authoring",
-    "Local History",
-    "Travel Photography",
-    "Sustainable Living",
-    "Aquarium Keeping",
-    "Outdoor Photography",
-    "Jewelry Making",
-    "Bird Watching",
-];
+const interestsList = ref([
+    { interest: "Sports", checked: false },
+    { interest: "Music", checked: false },
+    { interest: "Art", checked: false },
+    { interest: "Cooking", checked: false },
+    { interest: "Travel", checked: false },
+    { interest: "Technology", checked: false },
+    { interest: "Fashion", checked: false },
+    { interest: "Photography", checked: false },
+    { interest: "Reading", checked: false },
+    { interest: "Gaming", checked: false },
+    { interest: "Fitness", checked: false },
+    { interest: "Movies", checked: false },
+    { interest: "Dancing", checked: false },
+    { interest: "Nature", checked: false },
+    { interest: "Writing", checked: false },
+    { interest: "Science", checked: false },
+    { interest: "History", checked: false },
+    { interest: "Cycling", checked: false },
+    { interest: "Yoga", checked: false },
+    { interest: "DIY", checked: false },
+    { interest: "Animals", checked: false },
+    { interest: "Hiking", checked: false },
+    { interest: "Singing", checked: false },
+    { interest: "Swimming", checked: false },
+    { interest: "Cars", checked: false },
+    { interest: "Drawing", checked: false },
+    { interest: "Coding", checked: false },
+    { interest: "Languages", checked: false },
+    { interest: "Mathematics", checked: false },
+    { interest: "Food", checked: false },
+    { interest: "Coffee", checked: false },
+    { interest: "Tea", checked: false },
+    { interest: "Pets", checked: false },
+    { interest: "Cooking", checked: false },
+    { interest: "Baking", checked: false },
+    { interest: "Gardening", checked: false },
+    { interest: "Vintage", checked: false },
+    { interest: "Shopping", checked: false },
+    { interest: "Volunteering", checked: false },
+    { interest: "Crafts", checked: false },
+    { interest: "Board Games", checked: false },
+    { interest: "Puzzles", checked: false },
+    { interest: "Mindfulness", checked: false },
+    { interest: "Meditation", checked: false },
+    { interest: "Running", checked: false },
+    { interest: "Surfing", checked: false },
+    { interest: "Skating", checked: false },
+    { interest: "Skydiving", checked: false },
+    { interest: "Skiing", checked: false },
+    { interest: "Snowboarding", checked: false },
+    { interest: "Horseback Riding", checked: false },
+    { interest: "Camping", checked: false },
+    { interest: "Concerts", checked: false },
+    { interest: "Theater", checked: false },
+    { interest: "Musicals", checked: false },
+    { interest: "Comedy", checked: false },
+    { interest: "History", checked: false },
+    { interest: "Politics", checked: false },
+    { interest: "Documentaries", checked: false },
+    { interest: "Podcasts", checked: false },
+    { interest: "Cooking Shows", checked: false },
+    { interest: "Outdoor Adventures", checked: false },
+    { interest: "Fashion Design", checked: false },
+    { interest: "Interior Design", checked: false },
+    { interest: "Sculpting", checked: false },
+    { interest: "Pottery", checked: false },
+    { interest: "Calligraphy", checked: false },
+    { interest: "Archery", checked: false },
+    { interest: "Fishing", checked: false },
+    { interest: "Chess", checked: false },
+    { interest: "Billiards", checked: false },
+    { interest: "Painting", checked: false },
+    { interest: "Origami", checked: false },
+    { interest: "Film-making", checked: false },
+    { interest: "Stargazing", checked: false },
+    { interest: "Astronomy", checked: false },
+    { interest: "Model Building", checked: false },
+    { interest: "Woodworking", checked: false },
+    { interest: "Virtual Reality", checked: false },
+    { interest: "Robotics", checked: false },
+    { interest: "Gardening", checked: false },
+    { interest: "Rock Climbing", checked: false },
+    { interest: "Fitness Training", checked: false },
+    { interest: "Online Courses", checked: false },
+    { interest: "Space Exploration", checked: false },
+    { interest: "Antique Collecting", checked: false },
+    { interest: "Fashion Photography", checked: false },
+    { interest: "Graphic Design", checked: false },
+    { interest: "Cookbook Authoring", checked: false },
+    { interest: "Local History", checked: false },
+    { interest: "Travel Photography", checked: false },
+    { interest: "Sustainable Living", checked: false },
+    { interest: "Aquarium Keeping", checked: false },
+    { interest: "Outdoor Photography", checked: false },
+    { interest: "Jewelry Making", checked: false },
+    { interest: "Bird Watching", checked: false }
+]);
+
+const selectInterest = (index) => {
+    if (interestsList.value[index].checked == true)
+        interestsList.value[index].checked = false
+    else
+        interestsList.value[index].checked = true
+}
 
 const searchText = ref("")
-const filterInterest = computed(() => {
-    return interestsList.reduce((filtered, interest) => {
-        if (interest.toLowerCase().includes(searchText.value.toLowerCase())) {
-            filtered.push(interest);
+watch(searchText, () => {
+    document.querySelectorAll(".form-input .deck .pill").forEach((ele) => {
+        if (!ele.firstElementChild.value.toLowerCase().includes(searchText.value.toLowerCase())) {
+            ele.style.display = "none"
         }
-        return filtered;
-    }, []);
+        else {
+            ele.style.display = "block"
+        }
+    })
 })
 
 const affiliation = ref()
 const bio = ref()
-const interests = ref()
+const interests = computed(() => {
+    return interestsList.value
+        .filter(interest => interest.checked)
+        .map(interest => interest.interest);
+})
 
 const submit = async () => {
     const formdata = new FormData()
@@ -180,10 +193,14 @@ const submit = async () => {
             }
         })
 
-        await axios.post("/sign-up/final", {
+        await axios.post("/signup/final", {
+            u_id: store.state.currentSignupUser,
             bio: bio.value,
-            interests: interests.value
+            interests: interests.value,
+            affiliation: affiliation.value
         })
+
+        router.push("/login")
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
