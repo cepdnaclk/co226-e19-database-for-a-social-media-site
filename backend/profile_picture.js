@@ -11,7 +11,7 @@ const route = (db, server) => {
   // Set up storage for multer
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "profilepics/");
+      cb(null, "public/profilepics/");
     },
     filename: function (req, file, cb) {
       // Generate a unique filename or use the original file name
