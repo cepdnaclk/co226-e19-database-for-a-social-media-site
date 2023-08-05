@@ -6,8 +6,4 @@ import store from "./store";
 import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:3010";
-axios.defaults.headers = {
-  "Content-Type": "application/json",
-};
-
 createApp(App).use(store).use(router).mount("#app");

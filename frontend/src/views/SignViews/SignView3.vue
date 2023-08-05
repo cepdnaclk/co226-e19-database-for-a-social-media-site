@@ -46,6 +46,11 @@ import { useRouter } from 'vue-router';
 const store = useStore()
 const router = useRouter()
 
+window.history.pushState(null, null, window.location.href);
+window.onpopstate = function (event) {
+    window.history.pushState(null, null, window.location.href);
+};
+
 const imgTempSrc = ref("")
 const hasImg = ref("")
 const file = ref()
@@ -200,6 +205,7 @@ const submit = async () => {
             affiliation: affiliation.value
         })
 
+        store.state.currentSignupUser = ""
         router.push("/login")
     }
     catch (err) {

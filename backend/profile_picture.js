@@ -13,12 +13,10 @@ const route = (db, server) => {
     destination: (req, file, cb) => {
       cb(null, "profilepics/");
     },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      cb(
-        null,
-        file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-      );
+    filename: function (req, file, cb) {
+      // Generate a unique filename or use the original file name
+      const uniqueFileName = `${Date.now()}-${file.originalname}`;
+      cb(null, uniqueFileName);
     },
   });
 
@@ -50,7 +48,8 @@ const route = (db, server) => {
     (req, res) => {
       const userId = req.body.u_id; // Assuming the user ID is provided in the request body
       if (req.file) {
-        const imagePath = server + req.file.path.replace("\\", "/");
+        const imagePath =
+          server + req.file.path.replace(/\\/g, "/").replace("public/", "");
         db.query(
           "UPDATE user SET profile_picture = ? WHERE u_id = ?",
           [imagePath, userId],

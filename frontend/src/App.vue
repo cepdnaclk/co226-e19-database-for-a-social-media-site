@@ -13,6 +13,7 @@
 import compSuccessAlert from './components/compSuccessAlert.vue';
 import CompErrorAlert from './components/compErrorAlert.vue';
 import { useStore } from 'vuex';
+import axios from 'axios';
 
 const store = useStore()
 </script>

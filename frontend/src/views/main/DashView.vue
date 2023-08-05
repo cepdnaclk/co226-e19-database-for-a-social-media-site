@@ -28,9 +28,13 @@ import axios from 'axios';
 import compPost from '@/components/compPost.vue';
 import compComment from '@/components/compComment.vue';
 import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore()
 
 const posts = ref([])
 const friends = ref([])
+const user = store.state.user
 
 const getPosts = async () => {
     try {

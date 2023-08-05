@@ -15,13 +15,13 @@ export default createStore({
     addSuccess(state, msg) {
       state.sucList.push(msg);
       setTimeout(() => {
-        state.sucList.splice(0, 1);
+        state.sucList = [];
       }, 2000);
     },
     addError(state, msg) {
       state.errList.push(msg);
       setTimeout(() => {
-        state.errList.splice(0, 1);
+        state.errList = [];
       }, 2000);
     },
     setLogin(state, payload) {
@@ -30,7 +30,50 @@ export default createStore({
       state.user = payload.user;
       axios.defaults.headers = { Authorization: payload.token };
     },
+    setLogout(state) {
+      state.token = "";
+      state.user = "";
+      state.isAuthenticated = false;
+    },
   },
   actions: {},
   modules: {},
+  // Load initial state from localStorage
+  state: loadStateFromLocalStorage(),
+  // Subscribe to mutations to save state to localStorage
+  plugins: [
+    (store) => {
+      store.subscribe((mutation, state) => {
+        saveStateToLocalStorage(state);
+      });
+    },
+  ],
 });
+
+// Save state to localStorage
+function saveStateToLocalStorage(state) {
+  localStorage.setItem("myAppState", JSON.stringify(state));
+}
+
+// Retrieve state from localStorage
+function loadStateFromLocalStorage() {
+  const stateJson = localStorage.getItem("myAppState");
+  if (stateJson) {
+    const state = JSON.parse(stateJson);
+    if (state.token != "") {
+      axios.defaults.headers = { Authorization: state.token };
+    }
+    state.errList = [];
+    state.sucList = [];
+    return state;
+  } else {
+    return {
+      sucList: [],
+      errList: [],
+      isAuthenticated: false,
+      token: "",
+      user: Object,
+      currentSignupUser: "",
+    };
+  }
+}

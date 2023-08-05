@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useStore } from "vuex";
 import HomeView from "../views/HomeView.vue";
 
 const routes = [
@@ -6,6 +7,9 @@ const routes = [
     path: "/",
     name: "home",
     component: HomeView,
+    meta: {
+      auth: true,
+    },
     children: [
       {
         path: "",
@@ -22,12 +26,6 @@ const routes = [
           ),
       },
     ],
-  },
-  {
-    path: "/about",
-    name: "about",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
     path: "/login",
@@ -81,6 +79,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const store = useStore();
+  const isAuthenticated = store.state.isAuthenticated;
+
+  if (to.meta.auth && !isAuthenticated) {
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;

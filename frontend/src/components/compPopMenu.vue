@@ -1,7 +1,7 @@
 <template>
     <div class="pop-menu">
         <button class="profile" @click="toggleMenu">
-            <img src="@/assets/logo.png" alt="">
+            <img :src="user.profile_picture" alt="">
         </button>
         <div v-if="showMenu" class="menu">
             <h3>FunkyBird</h3>
@@ -15,6 +15,11 @@
 
 <script setup>
 import { ref } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore()
+
+const user = ref(store.state.user)
 
 const showMenu = ref(false)
 const toggleMenu = () => {

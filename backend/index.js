@@ -6,6 +6,7 @@ const express = require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const secret = require("./JWTconfig");
+const path = require("path");
 
 //create connection
 const db = mysql.createConnection({
@@ -58,6 +59,8 @@ app.use("/profile_picture", profile_picture);
 app.use("/post", post);
 app.use("/post_like", post_like);
 app.use("/comment_like", comment_like);
+
+app.use(express.static(path.join(__dirname, "public")));
 
 // Start the server
 app.listen(port, () => {
