@@ -4,6 +4,7 @@
             <div class="flex-box">
                 <div class="post-deck">
                     <comp-post v-for="post in posts" :key="post.id" :post="post" />
+                    <p style="color:#555" v-if="posts.length == 0">nothing to show here</p>
                 </div>
                 <div class="comm-deck">
                     <div class="friends">
@@ -15,6 +16,10 @@
                                 <h4>{{ friend.first_name + " " + friend.last_name }}</h4>
                                 <p>@{{ friend.user_name }}</p>
                             </router-link>
+                            <div class="friends-fallback" v-if="friends.length == 0">
+                                <p>Find friends to get in touch with them</p>
+                            </div>
+                            <router-link class="find" to="/friends">Find freinds</router-link>
                         </div>
                     </div>
                 </div>
@@ -130,6 +135,22 @@ onMounted(async () => {
     font-size: 0.8rem;
     margin-left: 0.75rem;
     color: #555;
+}
+
+.friends-fallback p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.find {
+    padding: 0.5rem 1rem;
+    color: white;
+    background: #2FA634;
+    border-radius: 3px;
+    display: block;
+    margin: 1rem auto;
+    text-decoration: none;
+    width: max-content;
 }
 
 @media screen and (max-width: 769px) {
