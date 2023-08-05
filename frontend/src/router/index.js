@@ -18,11 +18,19 @@ const routes = [
           import(/* webpackChunkName: "dash" */ "../views/main/DashView.vue"),
       },
       {
-        path: "/friends",
+        path: "/find-friends",
         name: "friends",
         component: () =>
           import(
             /* webpackChunkName: "dash" */ "../views/main/FriendsView.vue"
+          ),
+      },
+      {
+        path: "/profile/:username",
+        name: "profile",
+        component: () =>
+          import(
+            /* webpackChunkName: "dash" */ "../views/main/ProfileView.vue"
           ),
       },
     ],

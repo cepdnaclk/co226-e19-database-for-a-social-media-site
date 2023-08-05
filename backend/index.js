@@ -47,6 +47,7 @@ const profile_picture = require("./profile_picture")(db, server); // route for h
 const post = require("./post")(db); // route for post handling
 const post_like = require("./post_like")(db); // route for like handling related to posts
 const comment_like = require("./comment_like")(db); // route for like handling related to comments
+const displayProfile = require("./display_profile")(db);
 
 // Use the routes
 app.use("/login", login);
@@ -59,6 +60,7 @@ app.use("/profile_picture", profile_picture);
 app.use("/post", post);
 app.use("/post_like", post_like);
 app.use("/comment_like", comment_like);
+app.use("/profile", displayProfile);
 
 app.use(express.static(path.join(__dirname, "public")));
 

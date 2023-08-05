@@ -19,7 +19,7 @@
                             <div class="friends-fallback" v-if="friends.length == 0">
                                 <p>Find friends to get in touch with them</p>
                             </div>
-                            <router-link class="find" to="/friends">Find freinds</router-link>
+                            <router-link class="find" to="/find-friends">Find freinds</router-link>
                         </div>
                     </div>
                 </div>

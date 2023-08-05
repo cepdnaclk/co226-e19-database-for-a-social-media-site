@@ -42,7 +42,6 @@ const getUsers = async (query) => {
                 q: query,
             }
         })
-        console.log(response)
         return response.data
     }
     catch (err) {
@@ -99,6 +98,7 @@ h3 span {
     height: 100px;
     width: 100px;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .deck .card h4 {
