@@ -4,8 +4,8 @@
             <img :src="user.profile_picture" alt="">
         </button>
         <div v-if="showMenu" class="menu">
-            <h3>FunkyBird</h3>
-            <p>@funkybird</p>
+            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+            <p>@{{ user.user_name }}</p>
             <router-link to="/profile" class="btn">
                 View Profile
             </router-link>
@@ -42,6 +42,7 @@ const toggleMenu = () => {
 
 .profile img {
     height: 100%;
+    width: 100%;
     object-fit: cover;
 }
 
@@ -58,6 +59,7 @@ const toggleMenu = () => {
 
 .menu h3 {
     font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
 .menu p {
