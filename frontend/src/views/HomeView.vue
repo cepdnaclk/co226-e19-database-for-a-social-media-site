@@ -14,8 +14,6 @@
       </div>
     </div>
     <router-view></router-view>
-    <router-link to="/create" class="create"><img src="../assets/Edit_fill.png" alt=""><span>Create
-        Post</span></router-link>
   </div>
 </template>
 
@@ -83,25 +81,6 @@ import compPopMenu from "@/components/compPopMenu.vue";
   height: 2rem;
 }
 
-.create {
-  position: fixed;
-  bottom: 2rem;
-  left: 2rem;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: #043228;
-  color: white;
-  gap: 10px;
-  border-radius: 2rem;
-  text-decoration: none;
-}
-
-.create img {
-  filter: invert();
-  height: 20px;
-}
-
 @media screen and (max-width: 769px) {
   .nav-bar .container {
     padding: 0 1rem;
@@ -111,18 +90,5 @@ import compPopMenu from "@/components/compPopMenu.vue";
     display: none;
   }
 
-  .create {
-    left: auto;
-    right: 1rem;
-    border-radius: 50%;
-    height: 40px;
-    width: 40px;
-    padding: 0 0 3px;
-    justify-content: center;
-  }
-
-  .create span {
-    display: none;
-  }
 }
 </style>

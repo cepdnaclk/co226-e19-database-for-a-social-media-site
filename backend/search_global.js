@@ -11,14 +11,21 @@ const route = (db) => {
 
     // Retrieve friend profiles from the 'user' table based on the search query
     const query = `
-    SELECT u.user_name,u.first_name, u.last_name, u.bio, u.profile_picture
-    FROM user AS u
-    WHERE u.u_id != ? AND (u.user_name LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ?)
-  `;
+      SELECT u.user_name, u.first_name, u.last_name, u.bio, u.profile_picture,
+        CASE
+            WHEN f.requester_id = ? AND f.accepter_id = u.u_id THEN 1  -- You are the requester
+            WHEN f.requester_id = u.u_id AND f.accepter_id = ? THEN 1  -- You are the accepter
+            ELSE 0
+        END AS is_friend
+      FROM user AS u
+      LEFT JOIN friends_with AS f ON (f.requester_id = ? AND f.accepter_id = u.u_id) OR (f.requester_id = u.u_id AND f.accepter_id = ?)
+      WHERE u.u_id != ? AND (LOWER(u.user_name) LIKE LOWER(?) OR LOWER(u.first_name) LIKE LOWER(?) OR LOWER(u.last_name) LIKE LOWER(?))
+      LIMIT 10;
+    `;
     const searchValue = `%${searchQuery}%`;
     db.query(
       query,
-      [u_id, searchValue, searchValue, searchValue],
+      [u_id, u_id, u_id, u_id, u_id, searchValue, searchValue, searchValue],
       (err, results) => {
         if (err) {
           console.error(

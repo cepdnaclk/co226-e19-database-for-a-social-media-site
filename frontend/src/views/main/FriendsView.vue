@@ -2,14 +2,15 @@
     <div class="container">
         <h3>Connect with your friends on <span>Peralink</span></h3>
         <div class="search">
-            <input type="text" placeholder="search friend" v-model="search">
+            <input type="text" placeholder="search people" v-model="search">
         </div>
         <div class="deck">
             <router-link :to="`profile/${user.user_name}`" class="card" v-for="(user, index) in users" :key="index">
                 <img :src="user.profile_picture" alt="" class="prof-pic">
                 <h4>{{ user.first_name }} {{ user.last_name }}</h4>
                 <p>@{{ user.user_name }}</p>
-                <button @click="">Send Request</button>
+                <button class="request" v-if="!user.is_friend" @click="">Send Request</button>
+                <button class="reject" v-else @click="">Unfriend</button>
             </router-link>
         </div>
     </div>
@@ -112,7 +113,8 @@ h3 span {
     color: #2FA634;
 }
 
-.deck .card button {
+.deck .card .request,
+.deck .card .reject {
     display: block;
     padding: 0.5rem 1rem;
     background: #2FA634;
@@ -120,5 +122,41 @@ h3 span {
     margin-top: 1rem;
     font-size: 1rem;
     border-radius: 10px;
+}
+
+.deck .card .reject {
+    background: #555;
+}
+
+@media screen and (max-width:769px) {
+    .deck .card {
+        display: grid;
+        grid-template-rows: 1rem 1fr 1fr 1rem;
+        grid-template-columns: 1fr 2fr 2fr;
+        min-height: 80px;
+        padding: 0 1rem;
+    }
+
+    .deck .card img {
+        height: 50px;
+        width: 50px;
+        grid-row: 1/5;
+    }
+
+    .deck .card h4 {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .deck .card p {
+        grid-column: 2;
+        grid-row: 3;
+    }
+
+    .deck .card button {
+        grid-column: 3;
+        grid-row: 2/4;
+        font-size: 0.8rem;
+    }
 }
 </style>

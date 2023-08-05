@@ -65,4 +65,12 @@ button {
   color: red;
   margin: 2px 5px;
 }
+
+.back {
+  display: block;
+}
+
+.back img {
+  height: 25px;
+}
 </style>

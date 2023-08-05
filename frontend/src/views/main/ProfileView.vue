@@ -1,9 +1,16 @@
 <template>
     <div class="profile">
         <div class="left">
+            <router-link class="back" to="/find-friends"><img src="../../assets/Arrow_left.png" alt=""></router-link>
             <img class="prof-pic" :src="profile.profile_picture" alt="">
             <h4>{{ profile.first_name }} {{ profile.last_name }}</h4>
             <p class="uname">@{{ profile.user_name }}</p>
+            <button class="request" v-if="!profile.is_friend && (store.state.user.user_name != route.params.username)"
+                @click="">Send Request</button>
+            <button class="reject" v-else-if="profile.is_friend && (store.state.user.user_name != route.params.username)"
+                @click="">Unfriend</button>
+            <button class="request" v-else-if="store.state.user.user_name = route.params.username" @click="">Edit
+                profile</button>
             <ul>
                 <li><img src="../../assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
                 <li v-if="profile.sex"><img src="../../assets/man.png" alt=""> Male</li>
@@ -132,6 +139,21 @@ onMounted(async () => {
     align-items: center;
     gap: 1rem;
     margin: auto;
+}
+
+.request,
+.reject {
+    display: block;
+    padding: 0.5rem 1rem;
+    background: #2FA634;
+    color: white;
+    margin-top: 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+.reject {
+    background: #555;
 }
 
 @media screen and (max-width:468px) {

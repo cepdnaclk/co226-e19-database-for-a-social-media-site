@@ -7,7 +7,7 @@
         <div v-if="showMenu" class="menu">
             <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
             <p>@{{ user.user_name }}</p>
-            <router-link to="/profile" class="btn">
+            <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
                 View Profile
             </router-link>
         </div>
