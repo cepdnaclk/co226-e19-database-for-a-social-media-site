@@ -46,11 +46,70 @@ const route = (db) => {
           content: post.content,
           commentCount: post.commentCount,
           likeCount: post.likeCount,
+          media: post.media,
+          m_type: post.m_type,
           uname: post.user_name,
           fname: post.first_name,
           lname: post.last_name,
           propic: post.profile_picture,
           // any other required properties
+        }));
+
+        res.json(posts);
+      }
+    });
+  });
+
+  router.get("/profile/:id", auth, (req, res) => {
+    const u_id = req.params.id; //user ID is passed as a query parameter
+
+    // Retrieve posts from friends only
+    const query = `
+    SELECT 
+        p.*, 
+        COUNT(c.c_id) AS commentCount, 
+        COUNT(pl.id) AS likeCount,
+        u.user_name,
+        u.first_name,
+        u.last_name,
+        u.profile_picture
+    FROM post AS p
+    LEFT JOIN comment AS c ON c.post_id = p.p_id
+    LEFT JOIN post_like AS pl ON pl.post_id = p.p_id
+    LEFT JOIN user AS u ON u.u_id = p.user_id
+    WHERE p.user_id = ?
+    ORDER BY p.p_year DESC, p.p_month DESC, p.p_date DESC, p.p_time DESC;
+    `;
+
+    db.query(query, [u_id], (err, results) => {
+      if (err) {
+        console.error("Error retrieving posts from the database:", err);
+        res.status(500).json({ error: "Failed to retrieve posts" });
+      } else {
+        if (results.length <= 1 && results[0].p_id == null) {
+          res.json([]);
+          return;
+        }
+
+        // Process and format the retrieved data as needed
+        const posts = results.map((post) => ({
+          id: post.p_id,
+          date: getDateInfo(
+            post.p_year,
+            post.p_month,
+            post.p_date,
+            post.p_time.split(":")[0],
+            post.p_time.split(":")[1]
+          ),
+          content: post.content,
+          media: post.media,
+          m_type: post.m_type,
+          commentCount: post.commentCount,
+          likeCount: post.likeCount,
+          uname: post.user_name,
+          fname: post.first_name,
+          lname: post.last_name,
+          propic: post.profile_picture,
         }));
 
         res.json(posts);

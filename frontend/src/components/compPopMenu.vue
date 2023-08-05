@@ -2,9 +2,10 @@
     <div class="pop-menu">
         <button class="profile" @click="toggleMenu">
             <img :src="user.profile_picture" alt="">
+            <h3 class="pc">{{ user.first_name }} {{ user.last_name }}</h3>
         </button>
         <div v-if="showMenu" class="menu">
-            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+            <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
             <p>@{{ user.user_name }}</p>
             <router-link to="/profile" class="btn">
                 View Profile
@@ -33,17 +34,17 @@ const toggleMenu = () => {
 }
 
 .profile {
-    height: 2.5rem;
-    width: 2.5rem;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #2FA634;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .profile img {
-    height: 100%;
-    width: 100%;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #2FA634;
 }
 
 .menu {
@@ -77,5 +78,23 @@ const toggleMenu = () => {
     margin-top: 1rem;
     color: white;
     text-decoration: none;
+}
+
+.pc {
+    display: block;
+}
+
+.mobile {
+    display: none;
+}
+
+@media screen and (max-width:769px) {
+    .pc {
+        display: none;
+    }
+
+    .mobile {
+        display: block;
+    }
 }
 </style>

@@ -5,23 +5,45 @@
             <h4>{{ profile.first_name }} {{ profile.last_name }}</h4>
             <p class="uname">@{{ profile.user_name }}</p>
             <ul>
-                <li><img src="../../assets/M" alt=""></li>
+                <li><img src="../../assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
                 <li v-if="profile.sex"><img src="../../assets/man.png" alt=""> Male</li>
-                <li v-else><img src="../../assets/woman.png" alt=""> Male</li>
+                <li v-else><img src="../../assets/woman.png" alt="">Female</li>
+                <li><img src="../../assets/birthday-cake.png" alt="">{{ dob || "not set" }}</li>
+                <li><img src="../../assets/pin.png" alt="">{{ profile.location || "not set" }}</li>
+                <li><img src="../../assets/suitcase.png" alt="">{{ profile.affiliation || "not set" }}</li>
+                <p style="margin-block: 2rem 4rem;">{{ profile.bio }}</p>
             </ul>
         </div>
-        <div class="right"></div>
+        <div class="right">
+            <div class="post-deck">
+                <comp-post v-for="post in posts" :key="post.id" :post="post" />
+                <p style="color:#555" v-if="posts.length == 0">nothing to show here</p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
+import compPost from "@/components/compPost.vue";
 
 const route = useRoute()
+const store = useStore()
 const username = route.params.username
 const profile = ref({})
+const posts = ref([])
+
+const dob = computed(() => {
+    const months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    return `${profile.value.b_date} ${months[profile.value.b_month - 1]} ${profile.value.b_year}`;
+})
 
 const getProfile = async () => {
     try {
@@ -33,8 +55,20 @@ const getProfile = async () => {
     }
 }
 
+const getPosts = async (id) => {
+    try {
+        const result = await axios.get(`/post_feed/profile/${id}`);
+        console.log(result.data)
+        return result.data
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
 onMounted(async () => {
     profile.value = await getProfile()
+    posts.value = await getPosts(profile.value.u_id)
 })
 </script>
 
@@ -44,8 +78,8 @@ onMounted(async () => {
     left: 0;
     width: 40%;
     height: 100vh;
-    max-width: 450px;
     padding: 3rem 2rem;
+    overflow-y: scroll;
 }
 
 .left .prof-pic {
@@ -74,11 +108,56 @@ onMounted(async () => {
 
 .left ul li {
     display: grid;
-    grid-template-columns: 20px auto;
-    margin: 10px 0;
+    grid-template-columns: 30px auto;
+    margin: 15px 0;
 }
 
 .left ul li img {
     width: 20px;
+}
+
+.right {
+    position: absolute;
+    right: 0;
+    width: 60%;
+    background: #ddd;
+    min-height: 90vh;
+}
+
+.post-deck {
+    max-width: 500px;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: auto;
+}
+
+@media screen and (max-width:468px) {
+    .left img {
+        display: block;
+        margin: auto;
+    }
+}
+
+@media screen and (max-width:769px) {
+    .left {
+        width: clamp(300px, 80%, 600px);
+        padding: 3rem 0 2rem;
+        position: relative;
+        margin: auto;
+    }
+
+    .left ul li {
+        gap: 5px;
+    }
+
+    .right {
+        width: 100%;
+        position: relative;
+        min-height: 20vh;
+        padding: 1rem;
+    }
 }
 </style>
