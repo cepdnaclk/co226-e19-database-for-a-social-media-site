@@ -33,7 +33,6 @@ const route = (db) => {
   });
   router.get("/all", auth, (req, res) => {
     const u_id = req.user.u_id; // user ID is passed as a query parameter
-    console.log(req.user);
 
     // Retrieve friend profiles from the 'user' table based on the search query
     const query = `
