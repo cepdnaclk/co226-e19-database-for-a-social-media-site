@@ -11,7 +11,6 @@
             <div class="footer">
                 <p>{{ props.comment.no_likes }}</p>
                 <comp-com-like-menu />
-                <button>Reply</button>
                 <p>{{ props.comment.time }}</p>
             </div>
         </div>

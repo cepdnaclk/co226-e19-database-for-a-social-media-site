@@ -28,6 +28,7 @@ app.use(function (req, res, next) {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization "
   );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   next();
 });
 
@@ -46,6 +47,7 @@ const post_feed = require("./post_feed")(db); // route for post feed
 const profile_picture = require("./profile_picture")(db, server); // route for handling profile pics
 const post = require("./post")(db); // route for post handling
 const post_like = require("./post_like")(db); // route for like handling related to posts
+const comment = require("./comment")(db); // route for comment handling related to posts
 const comment_like = require("./comment_like")(db); // route for like handling related to comments
 const displayProfile = require("./display_profile")(db);
 const mediaUpload = require("./media_upload")(server);
@@ -60,6 +62,7 @@ app.use("/post_feed", post_feed);
 app.use("/profile_picture", profile_picture);
 app.use("/post", post);
 app.use("/post_like", post_like);
+app.use("/comment", comment);
 app.use("/comment_like", comment_like);
 app.use("/profile", displayProfile);
 app.use("/media", mediaUpload);
