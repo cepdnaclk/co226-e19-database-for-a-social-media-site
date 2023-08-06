@@ -1,11 +1,11 @@
 <template>
     <div class="post">
         <div class="post-header">
-            <div class="profile">
+            <router-link :to="`/profile/${props.post.uname}`" class="profile">
                 <img :src="props.post.propic" alt="">
                 <h4>{{ props.post.fname + " " + props.post.lname }}</h4>
                 <p>@{{ props.post.uname }}</p>
-            </div>
+            </router-link>
             <div class="date">
                 <img src="@/assets/Time_light.png" alt="">
                 <p>{{ props.post.date }}</p>
@@ -57,6 +57,8 @@ const props = defineProps(['post'])
     display: grid;
     grid-column: 5rem auto;
     grid-row: 1fr 1fr;
+    color: black;
+    text-decoration: none;
 }
 
 .post .post-header .profile img {
