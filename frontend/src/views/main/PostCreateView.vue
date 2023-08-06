@@ -56,8 +56,12 @@
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
+const router = useRouter()
 const store = useStore()
+
+
 const user = store.state.user
 const fname = ref(user.first_name)
 const lname = ref(user.last_name)
@@ -136,6 +140,8 @@ const postSend = async () => {
             m_type: m_type.value,
             private: visibility.value ? 1 : 0
         })
+
+        router.push("/")
     }
     catch (err) {
         store.commit("addError", err.response.data.error)

@@ -23,7 +23,7 @@ import { useStore } from "vuex"
 import compComment from "./compComment.vue"
 
 const props = defineProps(['postId'])
-const emits = defineEmits(['close'])
+const emits = defineEmits(['close', 'change'])
 const store = useStore()
 const close = () => { emits('close') }
 
@@ -43,7 +43,13 @@ const getComments = async (id) => {
 
 const sendComment = async () => {
     try {
-        await axios.post(`/comment/add`)
+        await axios.post(`/comment/add`, {
+            p_id: props.postId,
+            content: content.value
+        })
+        content.value = ""
+        comments.value = await getComments(props.postId)
+        emits('change')
     }
     catch (err) {
         store.commit("addError", err.response.data.error)

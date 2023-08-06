@@ -14,6 +14,7 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "peralink",
+  charset: "utf8mb4",
 });
 
 // Create Express app

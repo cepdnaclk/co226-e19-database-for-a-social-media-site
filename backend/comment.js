@@ -37,8 +37,26 @@ const route = (db) => {
           return res.status(500).json({ error: "Database error" });
         }
         if (results.length == 1 && results[0].c_id == null) return;
+
+        const comments = results.map((com) => ({
+          id: com.c_id,
+          date: getDateInfo(
+            com.c_year,
+            com.c_month,
+            com.c_date,
+            com.c_time.split(":")[0],
+            com.c_time.split(":")[1]
+          ),
+          content: com.content,
+          uname: com.user_name,
+          fname: com.first_name,
+          lname: com.last_name,
+          propic: com.profile_picture,
+          // any other required properties
+        }));
+
         // Return the comments for the specified post
-        res.status(200).json(results);
+        res.status(200).json(comments);
       }
     );
   });
@@ -61,6 +79,7 @@ const route = (db) => {
 
     db.query("INSERT INTO comment SET ?", comment, (err, results) => {
       if (err) {
+        console.log(err);
         return res.status(500).json({ error: "Database error" });
       }
       res.status(200).json({ message: "Comment added to post successfully" });
@@ -87,5 +106,53 @@ const route = (db) => {
 
   return router;
 };
+
+function getDateInfo(
+  inputYear,
+  inputMonth,
+  inputDay,
+  inputHours,
+  inputMinutes
+) {
+  const currentDate = new Date();
+  const targetDate = new Date(
+    inputYear,
+    inputMonth - 1,
+    inputDay,
+    inputHours,
+    inputMinutes
+  );
+
+  const timeDifference = currentDate - targetDate;
+  const minuteDifference = Math.floor(timeDifference / (1000 * 60));
+  const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+  const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+  if (minuteDifference < 60) {
+    return `${minuteDifference} min ago`;
+  } else if (hourDifference < 24) {
+    return `${hourDifference} h ago`;
+  } else if (dayDifference < 30) {
+    return `${dayDifference} d ago`;
+  } else {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const targetMonthName = monthNames[inputMonth - 1];
+    return `${targetMonthName} ${inputDay}, ${inputYear}`;
+  }
+}
 
 module.exports = route;

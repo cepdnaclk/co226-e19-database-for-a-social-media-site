@@ -139,60 +139,35 @@ function getDateInfo(
     inputMinutes
   );
 
-  const currentYear = currentDate.getFullYear();
-  const targetYear = targetDate.getFullYear();
-  const currentMonth = currentDate.getMonth();
-  const targetMonth = targetDate.getMonth();
-  const currentDay = currentDate.getDate();
-  const targetDay = targetDate.getDate();
-  const currentHours = currentDate.getHours();
-  const targetHours = targetDate.getHours();
-  const currentMinutes = currentDate.getMinutes();
-  const targetMinutes = targetDate.getMinutes();
+  const timeDifference = currentDate - targetDate;
+  const minuteDifference = Math.floor(timeDifference / (1000 * 60));
+  const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+  const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const currentMonthName = monthNames[currentMonth];
-  const targetMonthName = monthNames[targetMonth];
-  const currentMonthShort = currentMonthName.substr(0, 3);
-  const targetMonthShort = targetMonthName.substr(0, 3);
-
-  if (
-    currentYear === targetYear &&
-    currentMonth === targetMonth &&
-    currentDay === targetDay &&
-    currentHours === targetHours
-  ) {
-    const minuteDifference = targetMinutes - currentMinutes;
-    return `${minuteDifference}Min ago`;
-  } else if (
-    currentYear === targetYear &&
-    currentMonth === targetMonth &&
-    currentDay === targetDay
-  ) {
-    const hourDifference = targetHours - currentHours;
-    const minuteDifference = targetMinutes - currentMinutes;
-    return `${hourDifference}H ago`;
-  } else if (currentYear === targetYear && currentMonth === targetMonth) {
-    const dayDifference = targetDay - currentDay;
-    return `${dayDifference}D ago`;
-  } else if (currentYear === targetYear) {
-    return `${targetDay} ${targetMonthShort}`;
+  if (minuteDifference < 60) {
+    return `${minuteDifference} min ago`;
+  } else if (hourDifference < 24) {
+    return `${hourDifference} h ago`;
+  } else if (dayDifference < 30) {
+    return `${dayDifference} d ago`;
   } else {
-    return `${targetMonthShort} ${targetYear}`;
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const targetMonthName = monthNames[inputMonth - 1];
+    return `${targetMonthName} ${inputDay}, ${inputYear}`;
   }
 }
 

@@ -32,7 +32,7 @@
                 <span>{{ post.commentCount }} comments</span>
             </div>
         </button>
-        <comp-comments :postId="post.id" />
+        <comp-comments v-if="showComment" :postId="post.id" @close="viewComment" @change="getPost" />
     </div>
 </template>
 
@@ -46,6 +46,11 @@ import compComments from './compComments.vue'
 const props = defineProps(['post'])
 const post = ref({})
 const store = useStore()
+
+const showComment = ref(false)
+const viewComment = () => {
+    showComment.value = !showComment.value
+}
 
 const getPost = async () => {
     try {
