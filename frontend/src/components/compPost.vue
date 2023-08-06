@@ -2,7 +2,7 @@
     <div class="post">
         <div class="post-header">
             <div class="profile">
-                <img src="" alt="">
+                <img :src="props.post.propic" alt="">
                 <h4>{{ props.post.fname + " " + props.post.lname }}</h4>
                 <p>@{{ props.post.uname }}</p>
             </div>
@@ -15,7 +15,8 @@
             <p>{{ props.post.content }}</p>
         </div>
         <div class="image-content">
-            <img src="@/assets/_add558a1-c25c-47a9-8a6e-67ca5f1dce1d.jpg" alt="">
+            <img v-if="!props.post.m_type" :src="props.post.media" alt="">
+            <video v-else :src="props.post.media" controls></video>
         </div>
         <div class="post-actions">
             <comp-like-menu />
@@ -102,7 +103,6 @@ const props = defineProps(['post'])
 
 .post .image-content img {
     padding: 1rem 0 0;
-    aspect-ratio: 1;
     width: 100%;
     object-fit: contain;
 }

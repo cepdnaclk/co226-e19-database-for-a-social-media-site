@@ -56,7 +56,6 @@ const getPosts = async () => {
 const getFriends = async () => {
     try {
         const result = await axios.get(`/search_friend/all`);
-        console.log(result.data)
         return result.data
     }
     catch (err) {

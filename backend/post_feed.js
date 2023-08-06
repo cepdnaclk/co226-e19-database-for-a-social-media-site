@@ -23,12 +23,12 @@ const route = (db) => {
     LEFT JOIN post_like AS pl ON pl.post_id = p.p_id
     LEFT JOIN friends_with AS fw ON (fw.accepter_id = p.user_id OR fw.requester_id = p.user_id)
     LEFT JOIN user AS u ON u.u_id = p.user_id
-    WHERE fw.accepter_id = ? OR fw.requester_id = ?
+    WHERE (fw.accepter_id = ? OR fw.requester_id = ?) OR p.user_id = ?
     GROUP BY p.p_id
     ORDER BY p.p_year DESC, p.p_month DESC, p.p_date DESC, p.p_time DESC;
     `;
 
-    db.query(query, [u_id, u_id], (err, results) => {
+    db.query(query, [u_id, u_id, u_id], (err, results) => {
       if (err) {
         console.error("Error retrieving posts from the database:", err);
         res.status(500).json({ error: "Failed to retrieve posts" });

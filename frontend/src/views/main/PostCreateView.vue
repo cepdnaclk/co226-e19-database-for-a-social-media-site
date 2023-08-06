@@ -45,6 +45,10 @@
                 <img src="@/assets/Send_fill.svg" alt="">
             </button>
         </div>
+        <div class="private-public">
+            <input type="checkbox" v-model="visibility" id="visibility">
+            <label for="visibility">Friends Only</label>
+        </div>
     </div>
 </template>
 
@@ -59,11 +63,12 @@ const fname = ref(user.first_name)
 const lname = ref(user.last_name)
 const uname = ref(user.user_name)
 const profpic = ref(user.profile_picture)
-const date = ref(Date.now())
 const content = ref("")
 const file = ref("")
 const filePreview = ref()
 const m_type = ref(0)
+const visibility = ref("")
+
 
 // content input auto resize
 const autoResizeTextarea = ref(null);
@@ -86,14 +91,16 @@ const focusContent = () => {
 const pictureHandle = (e) => {
     m_type.value = 0
     file.value = e.target.files[0]
-    filePreview.value = URL.createObjectURL(e.target.files[0])
+    if (file.value)
+        filePreview.value = URL.createObjectURL(e.target.files[0])
 }
 
 // video input
 const videoHandle = (e) => {
     m_type.value = 1
     file.value = e.target.files[0]
-    filePreview.value = URL.createObjectURL(e.target.files[0])
+    if (file.value)
+        filePreview.value = URL.createObjectURL(e.target.files[0])
 }
 
 const postSend = async () => {
@@ -101,20 +108,34 @@ const postSend = async () => {
     formdata.append('media', file.value)
 
     try {
+        let fileURL = ""
+        const date = new Date(Date.now())
+
         if (file.value) {
-            await axios.post("/media/upload", formdata, {
+            const res = await axios.post("/media/upload", formdata, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             })
+
+            fileURL = res.data.mediaURL;
         }
 
-        // await axios.post("/signup/final", {
-        //     u_id: store.state.currentSignupUser,
-        //     bio: bio.value,
-        //     interests: interests.value,
-        //     affiliation: affiliation.value
-        // })
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+        const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+        await axios.post("/post/add", {
+            p_time: formattedTime,
+            p_date: date.getDate(),
+            p_month: date.getMonth(),
+            p_year: date.getFullYear(),
+            content: content.value,
+            media: fileURL,
+            m_type: m_type.value,
+            private: visibility.value ? 1 : 0
+        })
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
@@ -287,6 +308,20 @@ const postSend = async () => {
 .option-btn.send img {
     filter: invert();
     height: 30px;
+}
+
+.private-public {
+    position: fixed;
+    bottom: 2rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.private-public input {
+    height: 20px;
+    width: 20px;
 }
 
 @media screen and (max-width: 769px) {
