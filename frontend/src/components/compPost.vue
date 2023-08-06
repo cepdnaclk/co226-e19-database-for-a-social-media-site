@@ -1,44 +1,65 @@
 <template>
     <div class="post">
         <div class="post-header">
-            <router-link :to="`/profile/${props.post.uname}`" class="profile">
-                <img :src="props.post.propic" alt="">
-                <h4>{{ props.post.fname + " " + props.post.lname }}</h4>
-                <p>@{{ props.post.uname }}</p>
+            <router-link :to="`/profile/${post.uname}`" class="profile">
+                <img :src="post.propic" alt="">
+                <h4>{{ post.fname + " " + post.lname }}</h4>
+                <p>@{{ post.uname }}</p>
             </router-link>
             <div class="date">
                 <img src="@/assets/Time_light.png" alt="">
-                <p>{{ props.post.date }}</p>
+                <p>{{ post.date }}</p>
             </div>
         </div>
         <div class="post-text">
-            <p>{{ props.post.content }}</p>
+            <p>{{ post.content }}</p>
         </div>
         <div class="image-content">
-            <img v-if="!props.post.m_type" :src="props.post.media" alt="">
-            <video v-else :src="props.post.media" controls></video>
+            <img v-if="!post.m_type" :src="post.media" alt="">
+            <video v-else :src="post.media" controls></video>
         </div>
         <div class="post-actions">
-            <comp-like-menu />
-            <button><img src="@/assets/comment.png" alt=""></button>
+            <comp-like-menu :postId="post.id" @change="getPost" />
+            <button @click="viewComment"><img src="@/assets/comment.png" alt=""></button>
             <button><img src="@/assets/share.png" alt=""></button>
         </div>
         <button class="post-footer">
             <div class="likes">
                 <img src="@/assets/heart-fill.png" alt="">
-                <span>{{ props.post.likeCount }}</span>
+                <span>{{ post.likeCount }}</span>
             </div>
             <div class="comments">
-                <span>{{ props.post.commentCount }} comments</span>
+                <span>{{ post.commentCount }} comments</span>
             </div>
         </button>
+        <comp-comments :postId="post.id" />
     </div>
 </template>
 
 <script setup>
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 import compLikeMenu from './compLikeMenu.vue';
+import compComments from './compComments.vue'
 
 const props = defineProps(['post'])
+const post = ref({})
+const store = useStore()
+
+const getPost = async () => {
+    try {
+        const res = await axios.get(`/post/get/${props.post.id}`)
+        post.value = res.data
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+onMounted(() => {
+    post.value = props.post
+})
 </script>
 
 <style scoped>
