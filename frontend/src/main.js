@@ -13,9 +13,14 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      router.currentRoute.value.path !== "/login"
+    ) {
       store.commit("setLogout");
       axios.defaults.headers = "";
+      store.commit("addError", "Session has expired");
       router.push("/login");
     }
     return Promise.reject(error);
