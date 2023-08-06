@@ -67,14 +67,14 @@ const login = async (e) => {
     if (!pass)
         return
 
-    axios
+    await axios
         .post("/login", user)
         .then(async (res) => {
             await store.commit('setLogin', { token: res.data.token, user: res.data.user })
             router.push("/")
         })
         .catch((err) => {
-            console.log(err)
+            store.commit("addError", err.response.data.error)
         })
 }
 

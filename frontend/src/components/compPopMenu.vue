@@ -1,12 +1,13 @@
 <template>
     <div class="pop-menu">
         <button class="profile" @click="toggleMenu">
-            <img src="@/assets/logo.png" alt="">
+            <img :src="user.profile_picture" alt="">
+            <h3 class="pc">{{ user.first_name }} {{ user.last_name }}</h3>
         </button>
         <div v-if="showMenu" class="menu">
-            <h3>FunkyBird</h3>
-            <p>@funkybird</p>
-            <router-link to="/profile" class="btn">
+            <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
+            <p>@{{ user.user_name }}</p>
+            <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
                 View Profile
             </router-link>
         </div>
@@ -15,6 +16,11 @@
 
 <script setup>
 import { ref } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore()
+
+const user = ref(store.state.user)
 
 const showMenu = ref(false)
 const toggleMenu = () => {
@@ -28,16 +34,17 @@ const toggleMenu = () => {
 }
 
 .profile {
-    height: 2.5rem;
-    width: 2.5rem;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #2FA634;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .profile img {
-    height: 100%;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #2FA634;
 }
 
 .menu {
@@ -53,6 +60,7 @@ const toggleMenu = () => {
 
 .menu h3 {
     font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
 .menu p {
@@ -70,5 +78,23 @@ const toggleMenu = () => {
     margin-top: 1rem;
     color: white;
     text-decoration: none;
+}
+
+.pc {
+    display: block;
+}
+
+.mobile {
+    display: none;
+}
+
+@media screen and (max-width:769px) {
+    .pc {
+        display: none;
+    }
+
+    .mobile {
+        display: block;
+    }
 }
 </style>

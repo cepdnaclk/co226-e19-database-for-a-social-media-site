@@ -1,18 +1,18 @@
 <template>
     <div class="comment">
         <div class="prof-pic">
-            <img src="@/assets/logo.png" alt="" />
+            <img :src="props.comment.propic" alt="" />
         </div>
         <div class="com">
-            <h5><router-link to="">{{ props.comment.name }}</router-link></h5>
+            <h5><router-link :to="`/profile/${props.comment.uname}`">{{ props.comment.fname }} {{
+                props.comment.lname }}</router-link></h5>
             <p>
                 {{ props.comment.content }}
             </p>
             <div class="footer">
                 <p>{{ props.comment.no_likes }}</p>
                 <comp-com-like-menu />
-                <button>Reply</button>
-                <p>{{ props.comment.time }}</p>
+                <p>{{ props.comment.date }}</p>
             </div>
         </div>
     </div>
@@ -49,7 +49,6 @@ const props = defineProps(['comment']);
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 2px;
 }
 
 .comment .prof-pic img {
@@ -69,13 +68,13 @@ const props = defineProps(['comment']);
 .comment .com h5 a {
     text-decoration: none;
     font-family: "Raleway", sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     color: #011502;
 }
 
 .comment .com p {
-    margin-top: 5px;
+    margin-top: 7px;
     font-weight: 400;
     font-size: 0.9rem;
 }

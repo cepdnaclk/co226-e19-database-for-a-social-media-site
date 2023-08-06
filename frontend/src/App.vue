@@ -1,6 +1,22 @@
 <template>
-  <router-view />
+  <div class="app">
+    <transition name="alert">
+      <comp-success-alert v-if="store.state.sucList.length" :msg="store.state.sucList[0]" />
+    </transition>
+    <transition name="alert">
+      <comp-error-alert v-if="store.state.errList.length" :msg="store.state.errList[0]" />
+    </transition>
+    <router-view />
+  </div>
 </template>
+<script setup>
+import compSuccessAlert from './components/compSuccessAlert.vue';
+import CompErrorAlert from './components/compErrorAlert.vue';
+import { useStore } from 'vuex';
+import axios from 'axios';
+
+const store = useStore()
+</script>
 
 <style>
 .container {
@@ -29,5 +45,32 @@ button {
   cursor: pointer;
   background: none;
   border: none;
+}
+
+
+.alert-enter-from,
+.alert-leave-to {
+  transform: translateY(-6rem);
+  opacity: 0;
+}
+
+.alert-enter-active,
+.alert-leave-active {
+  transition: 0.2s all ease;
+}
+
+.errmsg {
+  font-size: 0.8rem !important;
+  text-align: left;
+  color: red;
+  margin: 2px 5px;
+}
+
+.back {
+  display: block;
+}
+
+.back img {
+  height: 25px;
 }
 </style>
