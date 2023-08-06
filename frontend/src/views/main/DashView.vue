@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <router-link to="/create" class="create"><img src="../../assets/Edit_fill.png" alt=""><span>Create
+        <router-link to="/create-post" class="create"><img src="../../assets/Edit_fill.png" alt=""><span>Create
                 Post</span></router-link>
     </div>
 </template>

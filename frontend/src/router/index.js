@@ -33,6 +33,14 @@ const routes = [
             /* webpackChunkName: "dash" */ "../views/main/ProfileView.vue"
           ),
       },
+      {
+        path: "/create-post",
+        name: "createPost",
+        component: () =>
+          import(
+            /* webpackChunkName: "post" */ "../views/main/PostCreateView.vue"
+          ),
+      },
     ],
   },
   {
