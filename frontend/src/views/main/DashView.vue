@@ -12,7 +12,7 @@
                         <div class="friend-deck">
                             <router-link :to="`profile/${friend.user_name}`" class="profile" v-for="friend in friends"
                                 :key="friend.user_name">
-                                <img src="" alt="">
+                                <img :src="friend.profile_picture" alt="">
                                 <h4>{{ friend.first_name + " " + friend.last_name }}</h4>
                                 <p>@{{ friend.user_name }}</p>
                             </router-link>
