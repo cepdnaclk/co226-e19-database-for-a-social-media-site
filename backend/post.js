@@ -38,7 +38,6 @@ const route = (db) => {
           SELECT post_id, liketype_id, COUNT(id) AS likeCount
           FROM post_like
           GROUP BY post_id, liketype_id
-        LIMIT 3
       ) AS lt ON lt.post_id = p.p_id
       WHERE p.p_id = ?;  
     `,

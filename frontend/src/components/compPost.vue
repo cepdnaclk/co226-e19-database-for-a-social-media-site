@@ -26,8 +26,8 @@
         <button class="post-footer" @click="viewComment">
             <div class="likes" v-if="post.likeCount">
                 <div class="like-deck">
-                    <p v-for="(type, index) in post.likeTypes" :key="index">{{ likes[type - 1] ? likes[type - 1].emoji : ''
-                    }}
+                    <p v-for="(type, index) in post.likeTypes.slice(0, 3)" :key="index">
+                        {{ likes[type - 1] ? likes[type - 1].emoji : '' }}
                     </p>
                 </div>
                 <span>{{ post.likeCount }}</span>
