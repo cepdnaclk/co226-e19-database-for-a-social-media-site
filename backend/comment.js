@@ -68,7 +68,7 @@ const route = (db) => {
     const content = req.body.content;
 
     const comment = {
-      c_time: new Date().toISOString().slice(11, 19), // Get current time in HH:mm:ss format
+      c_time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
       c_date: new Date().getDate(),
       c_month: new Date().getMonth() + 1,
       c_year: new Date().getFullYear(),

@@ -63,14 +63,13 @@ const route = (db) => {
   // POST route to add a new post
   router.post("/add", auth, (req, res) => {
     const userId = req.user.u_id; // Assuming the user ID is provided in the request body
-    const { p_time, p_date, p_month, p_year, content, media, m_type, private } =
-      req.body;
+    const { content, media, m_type, private } = req.body;
 
     const post = {
-      p_time,
-      p_date,
-      p_month,
-      p_year,
+      p_time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
+      p_date: new Date().getDate(),
+      p_month: new Date().getMonth() + 1,
+      p_year: new Date().getFullYear(),
       content,
       media,
       m_type,

@@ -125,16 +125,7 @@ const postSend = async () => {
             fileURL = res.data.mediaURL;
         }
 
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        const formattedTime = `${hours}:${minutes}:${seconds}`;
-
         await axios.post("/post/add", {
-            p_time: formattedTime,
-            p_date: date.getDate(),
-            p_month: date.getMonth(),
-            p_year: date.getFullYear(),
             content: content.value,
             media: fileURL,
             m_type: m_type.value,
