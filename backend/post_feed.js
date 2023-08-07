@@ -9,24 +9,49 @@ const route = (db) => {
     const u_id = req.user.u_id; //user ID is passed as a query parameter
 
     // Retrieve posts from friends and public posts
+    // const query = `
+    // SELECT 
+    //     p.*, 
+    //     COUNT(c.c_id) AS commentCount, 
+    //     COUNT(pl.id) AS likeCount,
+    //     u.user_name,
+    //     u.first_name,
+    //     u.last_name,
+    //     u.profile_picture
+    // FROM post AS p
+    // LEFT JOIN comment AS c ON c.post_id = p.p_id
+    // LEFT JOIN post_like AS pl ON pl.post_id = p.p_id
+    // LEFT JOIN friends_with AS fw ON (fw.accepter_id = p.user_id OR fw.requester_id = p.user_id)
+    // LEFT JOIN user AS u ON u.u_id = p.user_id
+    // WHERE (fw.accepter_id = ? OR fw.requester_id = ?) OR p.user_id = ? OR (p.private = 0)
+    // GROUP BY p.p_id
+    // ORDER BY p.p_year DESC, p.p_month DESC, p.p_date DESC, p.p_time DESC;
+    // `;
     const query = `
     SELECT 
         p.*, 
-        COUNT(c.c_id) AS commentCount, 
-        COUNT(pl.id) AS likeCount,
+        COALESCE(c.commentCount, 0) AS commentCount, 
+        COALESCE(pl.likeCount, 0) AS likeCount,
         u.user_name,
         u.first_name,
         u.last_name,
         u.profile_picture
     FROM post AS p
-    LEFT JOIN comment AS c ON c.post_id = p.p_id
-    LEFT JOIN post_like AS pl ON pl.post_id = p.p_id
-    LEFT JOIN friends_with AS fw ON (fw.accepter_id = p.user_id OR fw.requester_id = p.user_id)
     LEFT JOIN user AS u ON u.u_id = p.user_id
+    LEFT JOIN (
+        SELECT post_id, COUNT(c_id) AS commentCount
+        FROM comment
+        GROUP BY post_id
+    ) AS c ON c.post_id = p.p_id
+    LEFT JOIN (
+        SELECT post_id, COUNT(id) AS likeCount
+        FROM post_like
+        GROUP BY post_id
+    ) AS pl ON pl.post_id = p.p_id
+    LEFT JOIN friends_with AS fw ON (fw.accepter_id = p.user_id OR fw.requester_id = p.user_id)
     WHERE (fw.accepter_id = ? OR fw.requester_id = ?) OR p.user_id = ? OR (p.private = 0)
-    GROUP BY p.p_id
     ORDER BY p.p_year DESC, p.p_month DESC, p.p_date DESC, p.p_time DESC;
-    `;
+    `
 
     db.query(query, [u_id, u_id, u_id], (err, results) => {
       if (err) {
@@ -67,17 +92,26 @@ const route = (db) => {
     const query = `
     SELECT 
         p.*, 
-        COUNT(c.c_id) AS commentCount, 
-        COUNT(pl.id) AS likeCount,
+        COALESCE(c.commentCount, 0) AS commentCount, 
+        COALESCE(pl.likeCount, 0) AS likeCount,
         u.user_name,
         u.first_name,
         u.last_name,
         u.profile_picture
     FROM post AS p
-    LEFT JOIN comment AS c ON c.post_id = p.p_id
-    LEFT JOIN post_like AS pl ON pl.post_id = p.p_id
     LEFT JOIN user AS u ON u.u_id = p.user_id
-    WHERE p.user_id = ?
+    LEFT JOIN (
+        SELECT post_id, COUNT(c_id) AS commentCount
+        FROM comment
+        GROUP BY post_id
+    ) AS c ON c.post_id = p.p_id
+    LEFT JOIN (
+        SELECT post_id, COUNT(id) AS likeCount
+        FROM post_like
+        GROUP BY post_id
+    ) AS pl ON pl.post_id = p.p_id
+    LEFT JOIN friends_with AS fw ON (fw.accepter_id = p.user_id OR fw.requester_id = p.user_id)
+    WHERE p.user_id = ? 
     ORDER BY p.p_year DESC, p.p_month DESC, p.p_date DESC, p.p_time DESC;
     `;
 

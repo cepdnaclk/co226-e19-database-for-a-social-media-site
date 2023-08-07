@@ -12,19 +12,27 @@ const route = (db) => {
 
     db.query(
       `
-    SELECT 
+      SELECT 
           p.*, 
-          COUNT(c.c_id) AS commentCount, 
-          COUNT(pl.id) AS likeCount,
+          COALESCE(c.commentCount, 0) AS commentCount, 
+          COALESCE(pl.likeCount, 0) AS likeCount,
           u.user_name,
           u.first_name,
           u.last_name,
           u.profile_picture
       FROM post AS p
-      LEFT JOIN comment AS c ON c.post_id = p.p_id
-      LEFT JOIN post_like AS pl ON pl.post_id = p.p_id
       LEFT JOIN user AS u ON u.u_id = p.user_id
-      WHERE p.p_id = ?
+      LEFT JOIN (
+          SELECT post_id, COUNT(c_id) AS commentCount
+          FROM comment
+          GROUP BY post_id
+      ) AS c ON c.post_id = p.p_id
+      LEFT JOIN (
+          SELECT post_id, COUNT(id) AS likeCount
+          FROM post_like
+          GROUP BY post_id
+      ) AS pl ON pl.post_id = p.p_id
+      WHERE p.p_id = ?;  
     `,
       [postId],
       (err, results) => {
