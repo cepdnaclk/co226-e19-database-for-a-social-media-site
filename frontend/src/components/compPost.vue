@@ -23,7 +23,7 @@
             <button @click="viewComment"><img src="@/assets/comment.png" alt=""></button>
             <button><img src="@/assets/share.png" alt=""></button>
         </div>
-        <button class="post-footer">
+        <button class="post-footer" @click="viewComment">
             <div class="likes">
                 <img src="@/assets/heart-fill.png" alt="">
                 <span>{{ post.likeCount }}</span>
@@ -55,6 +55,7 @@ const viewComment = () => {
 const getPost = async () => {
     try {
         const res = await axios.get(`/post/get/${props.post.id}`)
+        console.log(res.data)
         post.value = res.data
     }
     catch (err) {

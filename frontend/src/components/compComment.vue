@@ -33,6 +33,7 @@ const props = defineProps(['comment']);
     background: #e3ebe2;
     width: fit-content;
     margin-left: 30px;
+    width: 80%;
 }
 
 .comment .prof-pic {
@@ -58,7 +59,7 @@ const props = defineProps(['comment']);
 }
 
 .comment .com {
-    width: fit-content;
+    width: 100%;
     text-align: left;
     padding: 1rem 1.5rem;
     padding-left: 40px;
@@ -77,6 +78,7 @@ const props = defineProps(['comment']);
     margin-top: 7px;
     font-weight: 400;
     font-size: 0.9rem;
+    word-wrap: break-word;
 }
 
 .comment .footer {

@@ -84,6 +84,7 @@ const setLike = async (index) => {
 }
 
 const sendLike = async (like_id) => {
+    console.log(props.postId)
     try {
         await axios.post("/post_like/add", {
             p_id: props.postId,
