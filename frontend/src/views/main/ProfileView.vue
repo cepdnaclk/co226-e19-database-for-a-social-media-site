@@ -33,14 +33,16 @@
 
 <script setup>
 import axios from "axios";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUpdated, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import compPost from "@/components/compPost.vue";
 
 const route = useRoute()
 const store = useStore()
-const username = route.params.username
+const username = computed(() => {
+    return route.params.username ? route.params.username : username.value
+})
 const profile = ref({})
 const posts = ref([])
 
@@ -55,7 +57,7 @@ const dob = computed(() => {
 
 const getProfile = async () => {
     try {
-        const res = await axios.get(`/profile/${username}`)
+        const res = await axios.get(`/profile/${username.value}`)
         return res.data
     }
     catch (err) {
@@ -66,7 +68,6 @@ const getProfile = async () => {
 const getPosts = async (id) => {
     try {
         const result = await axios.get(`/post_feed/profile/${id}`);
-        console.log(result.data)
         return result.data
     }
     catch (err) {
@@ -75,6 +76,11 @@ const getPosts = async (id) => {
 }
 
 onMounted(async () => {
+    profile.value = await getProfile()
+    posts.value = await getPosts(profile.value.u_id)
+})
+
+watch(username, async () => {
     profile.value = await getProfile()
     posts.value = await getPosts(profile.value.u_id)
 })

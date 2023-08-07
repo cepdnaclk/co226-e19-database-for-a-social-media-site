@@ -313,7 +313,7 @@ const submit = async () => {
 
     try {
         if (file.value && prePropic.value !== file.value) {
-            if(prePropic.value !== ""){
+            if (prePropic.value !== "") {
                 await axios.delete("/profile_picture/delete")
             }
             await axios.put("/profile_picture/update", formdata, {
@@ -576,5 +576,20 @@ onMounted(async () => {
     border-radius: 0;
     padding: 10px;
     margin: 0;
+}
+
+button[type="submit"] {
+    padding: 0.5em 1.5em;
+    border-radius: 2rem;
+    border: none;
+    display: block;
+    margin: auto;
+    width: 90%;
+    max-width: 300px;
+    margin-top: 3rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background: #2FA634;
+    color: white;
 }
 </style>
