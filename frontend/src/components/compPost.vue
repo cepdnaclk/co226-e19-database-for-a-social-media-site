@@ -24,8 +24,12 @@
             <button><img src="@/assets/share.png" alt=""></button>
         </div>
         <button class="post-footer" @click="viewComment">
-            <div class="likes">
-                <img src="@/assets/heart-fill.png" alt="">
+            <div class="likes" v-if="post.likeCount">
+                <div class="like-deck">
+                    <p v-for="(type, index) in post.likeTypes" :key="index">{{ likes[type - 1] ? likes[type - 1].emoji : ''
+                    }}
+                    </p>
+                </div>
                 <span>{{ post.likeCount }}</span>
             </div>
             <div class="comments">
@@ -51,11 +55,43 @@ const showComment = ref(false)
 const viewComment = () => {
     showComment.value = !showComment.value
 }
+const likes = ref([
+    {
+        id: 1,
+        name: 'like',
+        emoji: '👍',
+    },
+    {
+        id: 2,
+        name: 'love',
+        emoji: '❤️',
+    },
+    {
+        id: 3,
+        name: 'ha ha',
+        emoji: '😄',
+    },
+    {
+        id: 4,
+        name: 'wow',
+        emoji: '😲',
+    },
+    {
+        id: 5,
+        name: 'sad',
+        emoji: '😢',
+    },
+    {
+        id: 6,
+        name: 'angry',
+        emoji: '😡',
+    },
+])
+
 
 const getPost = async () => {
     try {
         const res = await axios.get(`/post/get/${props.post.id}`)
-        console.log(res.data)
         post.value = res.data
     }
     catch (err) {
@@ -170,8 +206,19 @@ onMounted(() => {
     gap: 5px;
 }
 
-.post .post-footer img {
-    height: 1rem;
+.post .post-footer .likes .like-deck {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    transform: scaleX(-1);
+}
+
+.post .post-footer .likes .like-deck p {
+    margin-right: -5px;
+}
+
+.post .post-footer .comments {
+    margin-left: auto;
 }
 
 @media screen and (max-width: 769px) {

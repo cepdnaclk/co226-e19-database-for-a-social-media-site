@@ -3,6 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("./authMiddleware");
+const timePresent = require("./timePresent");
 
 // Define a route for post handling with database connection
 const route = (db) => {
@@ -19,7 +20,8 @@ const route = (db) => {
           u.user_name,
           u.first_name,
           u.last_name,
-          u.profile_picture
+          u.profile_picture,
+          GROUP_CONCAT(lt.liketype_id ORDER BY lt.likeCount DESC) AS liketype_ids
       FROM post AS p
       LEFT JOIN user AS u ON u.u_id = p.user_id
       LEFT JOIN (
@@ -32,6 +34,12 @@ const route = (db) => {
           FROM post_like
           GROUP BY post_id
       ) AS pl ON pl.post_id = p.p_id
+      LEFT JOIN (
+          SELECT post_id, liketype_id, COUNT(id) AS likeCount
+          FROM post_like
+          GROUP BY post_id, liketype_id
+        LIMIT 3
+      ) AS lt ON lt.post_id = p.p_id
       WHERE p.p_id = ?;  
     `,
       [postId],
@@ -44,7 +52,7 @@ const route = (db) => {
         }
         const post = results.map((post) => ({
           id: post.p_id,
-          date: getDateInfo(
+          date: timePresent(
             post.p_year,
             post.p_month,
             post.p_date,
@@ -54,6 +62,7 @@ const route = (db) => {
           content: post.content,
           commentCount: post.commentCount,
           likeCount: post.likeCount,
+          likeTypes: post.liketype_ids,
           media: post.media,
           m_type: post.m_type,
           uname: post.user_name,
@@ -129,53 +138,5 @@ const route = (db) => {
 
   return router;
 };
-
-function getDateInfo(
-  inputYear,
-  inputMonth,
-  inputDay,
-  inputHours,
-  inputMinutes
-) {
-  const currentDate = new Date();
-  const targetDate = new Date(
-    inputYear,
-    inputMonth - 1,
-    inputDay,
-    inputHours,
-    inputMinutes
-  );
-
-  const timeDifference = currentDate - targetDate;
-  const minuteDifference = Math.floor(timeDifference / (1000 * 60));
-  const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-  const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-  if (minuteDifference < 60) {
-    return `${minuteDifference} min ago`;
-  } else if (hourDifference < 24) {
-    return `${hourDifference} h ago`;
-  } else if (dayDifference < 30) {
-    return `${dayDifference} d ago`;
-  } else {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const targetMonthName = monthNames[inputMonth - 1];
-    return `${targetMonthName} ${inputDay}, ${inputYear}`;
-  }
-}
 
 module.exports = route;

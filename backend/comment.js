@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("./authMiddleware");
+const timePresent = require("./timePresent");
 
 // Define a route for like and comment handling related to posts with database connection
 const route = (db) => {
@@ -40,7 +41,7 @@ const route = (db) => {
 
         const comments = results.map((com) => ({
           id: com.c_id,
-          date: getDateInfo(
+          date: timePresent(
             com.c_year,
             com.c_month,
             com.c_date,
@@ -106,53 +107,5 @@ const route = (db) => {
 
   return router;
 };
-
-function getDateInfo(
-  inputYear,
-  inputMonth,
-  inputDay,
-  inputHours,
-  inputMinutes
-) {
-  const currentDate = new Date();
-  const targetDate = new Date(
-    inputYear,
-    inputMonth - 1,
-    inputDay,
-    inputHours,
-    inputMinutes
-  );
-
-  const timeDifference = currentDate - targetDate;
-  const minuteDifference = Math.floor(timeDifference / (1000 * 60));
-  const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-  const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-  if (minuteDifference < 60) {
-    return `${minuteDifference} min ago`;
-  } else if (hourDifference < 24) {
-    return `${hourDifference} h ago`;
-  } else if (dayDifference < 30) {
-    return `${dayDifference} d ago`;
-  } else {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const targetMonthName = monthNames[inputMonth - 1];
-    return `${targetMonthName} ${inputDay}, ${inputYear}`;
-  }
-}
 
 module.exports = route;
