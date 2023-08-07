@@ -52,6 +52,7 @@ const comment = require("./comment")(db); // route for comment handling related 
 const comment_like = require("./comment_like")(db); // route for like handling related to comments
 const displayProfile = require("./display_profile")(db);
 const mediaUpload = require("./media_upload")(server);
+const friend_request = require("./friend_request");
 
 // Use the routes
 app.use("/login", login);
@@ -67,6 +68,7 @@ app.use("/comment", comment);
 app.use("/comment_like", comment_like);
 app.use("/profile", displayProfile);
 app.use("/media", mediaUpload);
+app.use("/friend_request", friend_request);
 
 app.use(express.static(path.join(__dirname, "public")));
 

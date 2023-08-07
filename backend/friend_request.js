@@ -4,29 +4,93 @@ const express = require("express");
 const router = express.Router();
 const db = require("./index"); // Assuming the database connection is in index.js
 const auth = require("./authMiddleware");
+const timePresent = require("./timePresent");
+
+router.get("/", auth, (req, res) => {
+  const requestee = req.user.u_id;
+
+  db.query(
+    `SELECT
+        fr.requester_id,
+        fr.req_time,
+        fr.req_date,
+        fr.req_month,
+        fr.req_year,
+        fr.req_status,
+        u.user_name AS requester_username,
+        u.first_name AS requester_first_name,
+        u.last_name AS requester_last_name,
+        u.profile_picture AS requester_profile_picture
+    FROM friend_request AS fr
+    INNER JOIN user AS u ON fr.requester_id = u.u_id
+    WHERE fr.requestee_id = ?;`,
+    [requestee],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res.send(
+        results.map((result) => ({
+          requester_id: result.requester_id,
+          date: timePresent(
+            result.req_year,
+            result.req_month,
+            result.req_date,
+            result.req_time.split(":")[0],
+            result.req_time.split(":")[1]
+          ),
+          req_status: result.req_status,
+          user_name: result.requester_username,
+          first_name: result.requester_first_name,
+          last_name: result.requester_last_name,
+          profile_picture: result.requester_profile_picture,
+        }))
+      );
+    }
+  );
+});
 
 // POST route to send a friend request
 router.post("/send", auth, (req, res) => {
-  const requesterId = req.user.u_id; // Assuming the requester's ID is provided in the request body
-  const requesteeId = req.body.friend_id; // Assuming the requestee's ID is provided in the request body
-  // Save the friend request in the database
-  const currentTime = new Date();
+  const requesterId = req.user.u_id;
+  const requesteeId = req.body.friend_id;
+
+  // Check if a friend request already exists
   db.query(
-    "INSERT INTO friend_request (requestee_id, requester_id, req_time, req_date, req_month, req_year, req_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [
-      requesteeId,
-      requesterId,
-      currentTime.toLocaleTimeString(),
-      currentTime.getDate(),
-      currentTime.getMonth() + 1,
-      currentTime.getFullYear(),
-      "pending",
-    ],
-    (err, results) => {
+    "SELECT * FROM friend_request WHERE requester_id = ? AND requestee_id = ?",
+    [requesterId, requesteeId],
+    (err, existingRequests) => {
       if (err) {
+        console.log(err);
         return res.status(500).json({ error: "Database error" });
       }
-      res.status(200).json({ message: "Friend request sent successfully" });
+
+      if (existingRequests.length > 0) {
+        return res.status(400).json({ error: "Friend request already exists" });
+      }
+
+      // If no existing request, insert the friend request
+      const currentTime = new Date();
+      db.query(
+        "INSERT INTO friend_request (requestee_id, requester_id, req_time, req_date, req_month, req_year, req_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [
+          requesteeId,
+          requesterId,
+          currentTime.toISOString().slice(11, 19),
+          currentTime.getDate(),
+          currentTime.getMonth() + 1,
+          currentTime.getFullYear(),
+          "pending",
+        ],
+        (err, results) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Database error" });
+          }
+          res.status(200).json({ message: "Friend request sent successfully" });
+        }
+      );
     }
   );
 });
