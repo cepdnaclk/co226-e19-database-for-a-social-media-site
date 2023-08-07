@@ -11,15 +11,19 @@ const route = (db) => {
 
     // Query the user data from the database
     const getUserQuery = `
-      SELECT u.*, 
+    SELECT u.*, 
         CASE
             WHEN f.requester_id = ? AND f.accepter_id = u.u_id THEN 1  -- You are the requester
             WHEN f.requester_id = u.u_id AND f.accepter_id = ? THEN 1  -- You are the accepter
             ELSE 0
-        END AS is_friend
-      FROM user AS u
-      LEFT JOIN friends_with AS f ON (f.requester_id = ? AND f.accepter_id = u.u_id) OR (f.requester_id = u.u_id AND f.accepter_id = ?)
-      WHERE u.user_name = ?;`;
+        END AS is_friend,
+        GROUP_CONCAT(ui.interest) AS interests
+    FROM user AS u
+    LEFT JOIN friends_with AS f ON (f.requester_id = ? AND f.accepter_id = u.u_id) OR (f.requester_id = u.u_id AND f.accepter_id = ?)
+    LEFT JOIN user_interests AS ui ON ui.user_id = u.u_id
+    WHERE u.user_name = ?
+    GROUP BY u.u_id;
+    `;
 
     db.query(
       getUserQuery,
@@ -51,6 +55,7 @@ const route = (db) => {
               affiliation: user.affiliation,
               bio: user.bio,
               is_friend: user.is_friend,
+              interests: user.interests
             };
             res.json(userData);
           }

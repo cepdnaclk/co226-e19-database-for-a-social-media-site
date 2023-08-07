@@ -9,8 +9,8 @@
                 @click="">Send Request</button>
             <button class="reject" v-else-if="profile.is_friend && (store.state.user.user_name != route.params.username)"
                 @click="">Unfriend</button>
-            <button class="request" v-else-if="store.state.user.user_name = route.params.username" @click="">Edit
-                profile</button>
+            <router-link to="/profile/edit-profile" class="request" v-else-if="store.state.user.user_name = route.params.username">Edit
+                profile</router-link>
             <ul>
                 <li><img src="../../assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
                 <li v-if="profile.sex"><img src="../../assets/man.png" alt=""> Male</li>
@@ -150,6 +150,8 @@ onMounted(async () => {
     margin-top: 1rem;
     font-size: 1rem;
     border-radius: 10px;
+    text-decoration: none;
+    width: max-content;
 }
 
 .reject {

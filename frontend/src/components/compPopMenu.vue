@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onUpdated, ref } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore()
@@ -26,6 +26,10 @@ const showMenu = ref(false)
 const toggleMenu = () => {
     showMenu.value = !showMenu.value
 }
+
+onUpdated(()=>{
+    user.value = store.state.user
+})
 </script>
 
 <style scoped>
