@@ -22,23 +22,30 @@ const route = (db) => {
 
     // profilePic as link
     // location as google map link
-    let addUserQuery = `INSERT INTO user (u_id, first_name, last_name, email, sex, b_year, b_month, b_date, profile_picture, location, affiliation, bio) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON DUPLICATE KEY UPDATE
-      first_name = VALUES(first_name),
-      last_name = VALUES(last_name),
-      email = VALUES(email),
-      sex = VALUES(sex),
-      b_year = VALUES(b_year),
-      b_month = VALUES(b_month),
-      b_date = VALUES(b_date),
-      location = VALUES(location),
-      affiliation = VALUES(affiliation),
-      bio = VALUES(bio)`;
+    let addUserQuery = `
+    UPDATE user
+    SET
+        first_name = ?,
+        last_name = ?,
+        email = ?,
+        sex = ?,
+        b_year = ?,
+        b_month = ?,
+        b_date = ?,
+        location = ?,
+        affiliation = ?,
+        bio = ?
+    `;
 
-    if (password !== null) {
-      addUserQuery += `, password = VALUES(password)`;
+    if (password !== (null || undefined)) {
+      addUserQuery += `,
+            password = ?
+    `;
     }
+
+    addUserQuery += `
+        WHERE u_id = ?;
+    `;
 
     const deleteInterestsQuery = `DELETE FROM user_interests WHERE user_id = ?`;
 
@@ -53,20 +60,34 @@ const route = (db) => {
 
       db.query(
         addUserQuery,
-        [
-          u_id,
-          first_name,
-          last_name,
-          email,
-          sex,
-          password,
-          b_year,
-          b_month,
-          b_date,
-          location,
-          affiliation,
-          bio,
-        ],
+        password !== (null || undefined)
+          ? [
+              first_name,
+              last_name,
+              email,
+              sex,
+              b_year,
+              b_month,
+              b_date,
+              location,
+              affiliation,
+              bio,
+              password,
+              u_id,
+            ]
+          : [
+              first_name,
+              last_name,
+              email,
+              sex,
+              b_year,
+              b_month,
+              b_date,
+              location,
+              affiliation,
+              bio,
+              u_id,
+            ],
         (error, result) => {
           if (error) {
             db.rollback(() => {
@@ -79,24 +100,36 @@ const route = (db) => {
               if (error) {
                 db.rollback(() => {
                   console.error("Error deleting existing interests:", error);
-                  res.status(500).json({ error: "Error updating user interests" });
+                  res
+                    .status(500)
+                    .json({ error: "Error updating user interests" });
                 });
               } else {
                 // Insert new interests
-                const interestsData = interests.map((interest) => [u_id, interest]);
+                const interestsData = interests.map((interest) => [
+                  u_id,
+                  interest,
+                ]);
                 db.query(addUserInterestsQuery, [interestsData], (error) => {
                   if (error) {
                     db.rollback(() => {
                       console.error("Error adding interests:", error);
-                      res.status(500).json({ error: "Error updating user interests" });
+                      res
+                        .status(500)
+                        .json({ error: "Error updating user interests" });
                     });
                   } else {
                     // Commit the transaction if everything is successful
                     db.commit((error) => {
                       if (error) {
                         db.rollback(() => {
-                          console.error("Error committing the transaction:", error);
-                          res.status(500).json({ error: "Error updating user" });
+                          console.error(
+                            "Error committing the transaction:",
+                            error
+                          );
+                          res
+                            .status(500)
+                            .json({ error: "Error updating user" });
                         });
                       } else {
                         res.json({ message: "User info update successful" });

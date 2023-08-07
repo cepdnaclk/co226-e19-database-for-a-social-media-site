@@ -1,5 +1,5 @@
 <template>
-    <div class="sign">
+    <div class="sign container">
         <form @submit.prevent="submit">
             <div class="profile-pic">
                 <label for="profpic" class="img">
@@ -358,6 +358,7 @@ onMounted(async () => {
 .sign {
     display: flex;
     align-items: center;
+    padding-bottom: 4rem;
 }
 
 .sign .left {
