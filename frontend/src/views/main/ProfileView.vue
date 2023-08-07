@@ -9,15 +9,16 @@
                 @click="">Send Request</button>
             <button class="reject" v-else-if="profile.is_friend && (store.state.user.user_name != route.params.username)"
                 @click="">Unfriend</button>
-            <router-link to="/profile/edit-profile" class="request" v-else-if="store.state.user.user_name = route.params.username">Edit
+            <router-link to="/profile/edit-profile" class="request"
+                v-else-if="store.state.user.user_name == route.params.username">Edit
                 profile</router-link>
             <ul>
-                <li><img src="../../assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
-                <li v-if="profile.sex"><img src="../../assets/man.png" alt=""> Male</li>
-                <li v-else><img src="../../assets/woman.png" alt="">Female</li>
-                <li><img src="../../assets/birthday-cake.png" alt="">{{ dob || "not set" }}</li>
-                <li><img src="../../assets/pin.png" alt="">{{ profile.location || "not set" }}</li>
-                <li><img src="../../assets/suitcase.png" alt="">{{ profile.affiliation || "not set" }}</li>
+                <li><img src="@/assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
+                <li v-if="profile.sex"><img src="@/assets/man.png" alt=""> Male</li>
+                <li v-else><img src="@/assets/woman.png" alt="">Female</li>
+                <li><img src="@/assets/birthday-cake.png" alt="">{{ dob || "not set" }}</li>
+                <li><img src="@/assets/pin.png" alt="">{{ profile.location || "not set" }}</li>
+                <li><img src="@/assets/suitcase.png" alt="">{{ profile.affiliation || "not set" }}</li>
                 <p style="margin-block: 2rem 4rem;">{{ profile.bio }}</p>
             </ul>
         </div>
