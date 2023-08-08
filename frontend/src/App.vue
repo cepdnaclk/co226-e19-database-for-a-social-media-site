@@ -73,4 +73,14 @@ button {
 .back img {
   height: 25px;
 }
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+  position: absolute;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

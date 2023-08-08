@@ -1,48 +1,53 @@
 <template>
-    <div class="post">
-        <div class="post-header">
-            <router-link :to="`/profile/${post.uname}`" class="profile">
-                <img :src="post.propic" alt="">
-                <h4>{{ post.fname + " " + post.lname }}</h4>
-                <p>@{{ post.uname }}</p>
-            </router-link>
-            <div class="date">
-                <img src="@/assets/Time_light.png" alt="">
-                <p>{{ post.date }}</p>
-            </div>
-        </div>
-        <div class="post-text">
-            <p>{{ post.content }}</p>
-        </div>
-        <div class="image-content">
-            <img v-if="!post.m_type" :src="post.media" alt="">
-            <video v-else :src="post.media" controls></video>
-        </div>
-        <div class="post-actions">
-            <comp-like-menu :postId="post.id" @change="getPost" />
-            <button @click="viewComment"><img src="@/assets/comment.png" alt=""></button>
-            <button><img src="@/assets/share.png" alt=""></button>
-        </div>
-        <button class="post-footer" @click="viewComment">
-            <div class="likes" v-if="post.likeCount">
-                <div class="like-deck">
-                    <p v-for="(type, index) in post.likeTypes.slice(0, 3)" :key="index">
-                        {{ likes[type - 1] ? likes[type - 1].emoji : '' }}
-                    </p>
+    <div class="post-container">
+        <transition name="fade" role="div" mode="in-out">
+            <img src="@/assets/post_placeholder.png" class="placeholder" v-if="!post.media" alt="">
+            <div class="post" v-else>
+                <div class="post-header">
+                    <router-link :to="`/profile/${post.uname}`" class="profile">
+                        <img :src="post.propic" alt="">
+                        <h4>{{ post.fname + " " + post.lname }}</h4>
+                        <p>@{{ post.uname }}</p>
+                    </router-link>
+                    <div class="date">
+                        <img src="@/assets/Time_light.png" alt="">
+                        <p>{{ post.date }}</p>
+                    </div>
                 </div>
-                <span>{{ post.likeCount }}</span>
+                <div class="post-text">
+                    <p>{{ post.content }}</p>
+                </div>
+                <div class="image-content">
+                    <img v-if="!post.m_type" :src="post.media" alt="">
+                    <video v-else :src="post.media" controls></video>
+                </div>
+                <div class="post-actions">
+                    <comp-like-menu v-if="post.id" :postId="post.id" @change="getPost" />
+                    <button @click="viewComment"><img src="@/assets/comment.png" alt=""></button>
+                    <button><img src="@/assets/share.png" alt=""></button>
+                </div>
+                <button class="post-footer" @click="viewComment">
+                    <div class="likes" v-if="post.likeCount">
+                        <div class="like-deck">
+                            <p v-for="(type, index) in post.likeTypes.slice(0, 3)" :key="index">
+                                {{ likes[type - 1] ? likes[type - 1].emoji : '' }}
+                            </p>
+                        </div>
+                        <span>{{ post.likeCount }}</span>
+                    </div>
+                    <div class="comments">
+                        <span>{{ post.commentCount }} comments</span>
+                    </div>
+                </button>
+                <comp-comments v-if="showComment" :postId="post.id" @close="viewComment" @change="getPost" />
             </div>
-            <div class="comments">
-                <span>{{ post.commentCount }} comments</span>
-            </div>
-        </button>
-        <comp-comments v-if="showComment" :postId="post.id" @close="viewComment" @change="getPost" />
+        </transition>
     </div>
 </template>
 
 <script setup>
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import compLikeMenu from './compLikeMenu.vue';
 import compComments from './compComments.vue'
@@ -88,7 +93,6 @@ const likes = ref([
     },
 ])
 
-
 const getPost = async () => {
     try {
         const res = await axios.get(`/post/get/${props.post.id}`)
@@ -99,15 +103,27 @@ const getPost = async () => {
     }
 }
 
-onMounted(() => {
-    post.value = props.post
+onMounted(async () => {
+    await getPost()
 })
 </script>
 
 <style scoped>
+.post-container {
+    position: relative;
+}
+
+.placeholder {
+    width: 100%;
+    min-width: 450px;
+    max-width: 550px;
+}
+
 .post {
     background: white;
-    max-width: 600px;
+    min-width: 450px;
+    max-width: 550px;
+    width: 100%;
 }
 
 .post .post-header {
@@ -222,6 +238,14 @@ onMounted(() => {
 }
 
 @media screen and (max-width: 769px) {
+    .placeholder {
+        min-width: auto;
+    }
+
+    .post {
+        min-width: auto;
+    }
+
     .post .post-header .profile img {
         height: 40px;
         width: 40px;

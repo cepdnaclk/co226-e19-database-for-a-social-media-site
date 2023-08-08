@@ -178,6 +178,8 @@ watch(username, async () => {
         padding: 3rem 0 2rem;
         position: relative;
         margin: auto;
+        height: auto;
+        overflow-y: hidden;
     }
 
     .left ul li {
