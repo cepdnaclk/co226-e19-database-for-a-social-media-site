@@ -202,7 +202,7 @@ onMounted(async () => {
     }
 
     .comm-deck {
-        position: fixed;
+        display: none;
     }
 }
 </style>
