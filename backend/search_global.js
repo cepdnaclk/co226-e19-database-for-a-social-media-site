@@ -30,7 +30,7 @@ const route = (db) => {
     LEFT JOIN friends_with AS f ON (f.requester_id = ? AND f.accepter_id = u.u_id) OR (f.requester_id = u.u_id AND f.accepter_id = ?)
     LEFT JOIN friend_request AS fr ON fr.requestee_id = u.u_id AND fr.requester_id = ?
     WHERE u.u_id != ? AND (LOWER(u.user_name) LIKE LOWER(?) OR LOWER(u.first_name) LIKE LOWER(?) OR LOWER(u.last_name) LIKE LOWER(?))
-    LIMIT 10;
+    LIMIT 20;
     `;
     const searchValue = `%${searchQuery}%`;
     db.query(
