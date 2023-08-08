@@ -62,6 +62,7 @@ const getUsers = async (query) => {
                 q: query,
             }
         })
+        console.log(response.data)
         return response.data
     }
     catch (err) {

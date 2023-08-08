@@ -28,10 +28,7 @@ const route = (db) => {
 
     // Query to fetch comments for the specified post
     db.query(
-      "SELECT c.*, u.user_name, u.first_name, u.last_name, u.profile_picture " +
-        "FROM comment AS c " +
-        "LEFT JOIN user AS u ON u.u_id = c.user_id " +
-        "WHERE c.post_id = ?",
+      "SELECT c.c_id " + "FROM comment AS c " + "WHERE c.post_id = ?",
       [postId],
       (err, results) => {
         if (err) {
@@ -40,6 +37,57 @@ const route = (db) => {
         if (results.length == 1 && results[0].c_id == null) return;
 
         const comments = results.map((com) => ({
+          id: com.c_id,
+        }));
+
+        // Return the comments for the specified post
+        res.status(200).json(comments);
+      }
+    );
+  });
+
+  router.get("/get-comment/:commentid", auth, (req, res) => {
+    const commentId = req.params.commentid; // Get the comment ID from the route parameter
+
+    db.query(
+      `
+      SELECT
+        c.*,
+        u.user_name,
+        u.first_name,
+        u.last_name,
+        u.profile_picture,
+        IFNULL(cl.likeCount, 0) AS likeCount,
+        IFNULL(lt.liketype_ids, '') AS liketype_ids
+      FROM comment AS c
+      LEFT JOIN user AS u ON u.u_id = c.user_id
+      LEFT JOIN (
+        SELECT comment_id, COUNT(liketype_id) AS likeCount
+        FROM comment_like
+        GROUP BY comment_id
+      ) AS cl ON cl.comment_id = c.c_id
+      LEFT JOIN (
+        SELECT comment_id, GROUP_CONCAT(liketype_id ORDER BY likeCount DESC) AS liketype_ids
+        FROM (
+          SELECT comment_id, liketype_id, COUNT(liketype_id) AS likeCount
+          FROM comment_like
+          GROUP BY comment_id, liketype_id
+        ) AS temp
+        GROUP BY comment_id
+      ) AS lt ON lt.comment_id = c.c_id
+      WHERE c.c_id = ?;
+    `,
+      [commentId],
+      (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: "Database error" });
+        }
+        if (results.length === 0) {
+          return res.status(404).json({ error: "Comment not found" });
+        }
+
+        const comment = results.map((com) => ({
           id: com.c_id,
           date: timePresent(
             com.c_year,
@@ -53,11 +101,13 @@ const route = (db) => {
           fname: com.first_name,
           lname: com.last_name,
           propic: com.profile_picture,
+          likeCount: com.likeCount,
+          liketypes: com.liketype_ids.split(",").slice(0, 3), // Take the first 3 liketype_ids
           // any other required properties
         }));
 
-        // Return the comments for the specified post
-        res.status(200).json(comments);
+        // Return the comment details
+        res.status(200).json(comment[0]);
       }
     );
   });

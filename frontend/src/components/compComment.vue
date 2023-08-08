@@ -1,36 +1,94 @@
 <template>
     <div class="comment">
         <div class="prof-pic">
-            <img :src="props.comment.propic" alt="" />
+            <img :src="comment.propic" alt="" />
         </div>
         <div class="com">
-            <h5><router-link :to="`/profile/${props.comment.uname}`">{{ props.comment.fname }} {{
-                props.comment.lname }}</router-link></h5>
+            <h5><router-link :to="`/profile/${comment.uname}`">{{ comment.fname }} {{
+                comment.lname }}</router-link></h5>
             <p>
-                {{ props.comment.content }}
+                {{ comment.content }}
             </p>
             <div class="footer">
-                <p>{{ props.comment.no_likes }}</p>
-                <comp-com-like-menu />
-                <p>{{ props.comment.date }}</p>
+                <div class="likes" v-if="comment.likeCount">
+                    <div class="like-deck">
+                        <p v-for="(type, index) in comment.liketypes" :key="index">
+                            {{ likes[type - 1] ? likes[type - 1].emoji : '' }}
+                        </p>
+                    </div>
+                    <span>{{ comment.likeCount }}</span>
+                </div>
+                <comp-com-like-menu :commentID="props.comment.id" @change="loadComment(props.comment.id)" />
+                <p>{{ comment.date }}</p>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, onMounted, ref } from "vue";
+import axios from "axios";
+import { useStore } from "vuex";
 import compComLikeMenu from "./compComLikeMenu.vue";
 
 const props = defineProps(['comment']);
+const store = useStore()
+const comment = ref({})
 
+const likes = ref([
+    {
+        id: 1,
+        name: 'like',
+        emoji: '👍',
+    },
+    {
+        id: 2,
+        name: 'love',
+        emoji: '❤️',
+    },
+    {
+        id: 3,
+        name: 'ha ha',
+        emoji: '😄',
+    },
+    {
+        id: 4,
+        name: 'wow',
+        emoji: '😲',
+    },
+    {
+        id: 5,
+        name: 'sad',
+        emoji: '😢',
+    },
+    {
+        id: 6,
+        name: 'angry',
+        emoji: '😡',
+    },
+])
+
+
+const loadComment = async (id) => {
+    try {
+        const res = await axios.get(`/comment/get-comment/${id}`)
+        comment.value = res.data
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+onMounted(async () => {
+    await loadComment(props.comment.id)
+})
 </script>
 
 <style scoped>
 .comment {
     position: relative;
     border-radius: 1rem;
-    background: #e3ebe2;
+    box-shadow: 0 0 5px #00000033;
     width: fit-content;
     margin-left: 30px;
     width: 80%;
@@ -84,7 +142,6 @@ const props = defineProps(['comment']);
 .comment .footer {
     display: flex;
     align-items: center;
-    justify-content: right;
     margin-top: 10px;
     color: #011502;
 }
@@ -94,15 +151,29 @@ const props = defineProps(['comment']);
     font-size: 0.8rem;
 }
 
-.comment .com .footer p:first-child {
-    margin-right: auto;
-}
-
 .comment .com .footer button {
     background: none;
     border: none;
     font-size: 0.8rem;
     margin-right: 20px;
     cursor: pointer;
+}
+
+.footer .likes {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: auto;
+}
+
+.footer .likes .like-deck {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    transform: scaleX(-1);
+}
+
+.footer .likes .like-deck p {
+    margin-right: -5px;
 }
 </style>
