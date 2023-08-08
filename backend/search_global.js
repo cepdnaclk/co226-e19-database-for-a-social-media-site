@@ -23,7 +23,7 @@ const route = (db) => {
             ELSE 0
         END AS is_friend,
         CASE
-            WHEN fr.requestee_id = u.u_id AND fr.requester_id = ? THEN 1  -- You sent a friend request
+            WHEN fr.requestee_id = u.u_id AND fr.requester_id = ? AND fr.req_status = 'pending' THEN 1  -- You sent a friend request
             ELSE 0
         END AS sent_request
     FROM user AS u

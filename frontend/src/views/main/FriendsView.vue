@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="requests">
+        <div class="requests" v-if="requests.length">
             <h3>Friend Requests</h3>
             <div class="request" v-for="(request, index) in requests" :key="index">
                 <router-link class="profpic" :to="`/profile/${request.user_name}`">
@@ -12,8 +12,8 @@
                     </router-link>
                     has sent a friend request
                 </p>
-                <button class="btn accept" @click="acceptRequest">Accept</button>
-                <button class="btn reject" @click="rejectRequest">Delete</button>
+                <button class="btn accept" @click="acceptRequest(request.requester_id)">Accept</button>
+                <button class="btn reject" @click="rejectRequest(request.requester_id)">Delete</button>
             </div>
         </div>
         <h3>Find your friends on <span>Peralink</span></h3>
@@ -30,8 +30,9 @@
                 <button class="request" v-if="!user.is_friend && !user.sent_request" @click="sendRequest(user.u_id)">Send
                     Request</button>
                 <button class="request cancel" v-else-if="!user.is_friend && user.sent_request"
-                    @click="cancelRequest(user.u_id)">Cancel Request</button>
-                <button class="reject" v-else @click="">Unfriend</button>
+                    @click="cancelRequest(user.u_id, `${user.first_name} ${user.last_name}`)">Cancel Request</button>
+                <button class="reject" v-else
+                    @click="unfriend(user.u_id, `${user.first_name} ${user.last_name}`)">Unfriend</button>
             </div>
         </div>
     </div>
@@ -97,6 +98,45 @@ const cancelRequest = async (id) => {
             data: { friend_id: id }
         })
         store.commit("addSuccess", "Request canceled")
+        users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const acceptRequest = async (id, name) => {
+    try {
+        await axios.post("/friend_request/accept", {
+            friend_id: id
+        })
+        store.commit("addSuccess", `You and ${name} friends`)
+        users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+        requests.value = await getRequest()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const rejectRequest = async (id) => {
+    try {
+        await axios.delete("/friend_request/reject", {
+            data: { friend_id: id }
+        })
+        requests.value = await getRequest()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const unfriend = async (id, name) => {
+    try {
+        await axios.delete("/friend_request/unfriend", {
+            data: { friend_id: id }
+        })
+        store.commit("addSuccess", `You and ${name} no longer friends`)
         users.value = await getUsers(search.value.length > 0 ? search.value : "%")
     }
     catch (err) {
