@@ -53,12 +53,13 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 
 
@@ -69,6 +70,7 @@ const uname = ref(user.user_name)
 const profpic = ref(user.profile_picture)
 const content = ref("")
 const file = ref("")
+const fileURL = ref("")
 const filePreview = ref()
 const m_type = ref(0)
 const visibility = ref("")
@@ -81,6 +83,7 @@ const adjustTextareaHeight = () => {
     const textarea = autoResizeTextarea.value;
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
+    console.log(textarea.scrollHeight)
 };
 
 watch(content, adjustTextareaHeight);
@@ -112,7 +115,6 @@ const postSend = async () => {
     formdata.append('media', file.value)
 
     try {
-        let fileURL = ""
         const date = new Date(Date.now())
 
         if (file.value) {
@@ -122,12 +124,12 @@ const postSend = async () => {
                 }
             })
 
-            fileURL = res.data.mediaURL;
+            fileURL.value = res.data.mediaURL;
         }
 
         await axios.post("/post/add", {
             content: content.value,
-            media: fileURL,
+            media: fileURL.value,
             m_type: m_type.value,
             private: visibility.value ? 1 : 0
         })
@@ -138,6 +140,17 @@ const postSend = async () => {
         store.commit("addError", err.response.data.error)
     }
 }
+
+onMounted(() => {
+    if (route.query.post) {
+        const post = JSON.parse(route.query.post)
+        content.value = post.content
+        fileURL.value = post.url
+        filePreview.value = post.url
+        content.value += `\n\nreposted from @${post.uname}`
+        adjustTextareaHeight()
+    }
+})
 
 </script>
 

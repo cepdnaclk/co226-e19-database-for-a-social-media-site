@@ -102,7 +102,9 @@ watch(content, adjustTextareaHeight);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    height: 100%;
+    height: 80%;
+    overflow-y: scroll;
+    padding: 1rem 0;
 }
 
 .comment-deck .footer {

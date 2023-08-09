@@ -34,6 +34,7 @@ export default createStore({
       state.token = "";
       state.user = "";
       state.isAuthenticated = false;
+      axios.defaults.headers = {};
     },
   },
   actions: {},

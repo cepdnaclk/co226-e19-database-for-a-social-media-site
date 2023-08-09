@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="post-text">
-                    <p>{{ post.content }}</p>
+                    <pre>{{ post.content }}</pre>
                 </div>
                 <div class="image-content">
                     <img v-if="!post.m_type" :src="post.media" alt="">
@@ -24,7 +24,7 @@
                 <div class="post-actions">
                     <comp-like-menu v-if="post.id" :postId="post.id" @change="getPost" />
                     <button @click="viewComment"><img src="@/assets/comment.png" alt=""></button>
-                    <button><img src="@/assets/share.png" alt=""></button>
+                    <button @click="sharePost"><img src="@/assets/share.png" alt=""></button>
                 </div>
                 <button class="post-footer" @click="viewComment">
                     <div class="likes" v-if="post.likeCount">
@@ -51,10 +51,12 @@ import { onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import compLikeMenu from './compLikeMenu.vue';
 import compComments from './compComments.vue'
+import { useRouter } from 'vue-router';
 
 const props = defineProps(['post'])
 const post = ref({})
 const store = useStore()
+const router = useRouter()
 
 const showComment = ref(false)
 const viewComment = () => {
@@ -101,6 +103,19 @@ const getPost = async () => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+}
+
+const sharePost = () => {
+    router.push({
+        name: "createPost",
+        query: {
+            post: JSON.stringify({
+                content: post.value.content,
+                url: post.value.media,
+                uname: post.value.uname
+            })
+        }
+    })
 }
 
 onMounted(async () => {
