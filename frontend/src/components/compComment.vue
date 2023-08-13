@@ -21,6 +21,10 @@
                 <comp-com-like-menu :commentID="props.comment.id" @change="loadComment(props.comment.id)" />
                 <p>{{ comment.date }}</p>
             </div>
+            <button class="del" v-if="comment.uname == store.state.user.user_name" @click="deleteComment">
+                <img src="https://th.bing.com/th/id/R.6c6076b5539e080de7f08ca78b915d92?rik=XwvNBEqhthlBug&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_408479.png&ehk=QaDRFwORrQoYDEsEYfH%2bwUwF4%2bqfRV6UHFVOz4qzksM%3d&risl=&pid=ImgRaw&r=0"
+                    alt="">
+            </button>
         </div>
     </div>
 </template>
@@ -68,19 +72,8 @@ const likes = ref([
     },
 ])
 
-
-const loadComment = async (id) => {
-    try {
-        const res = await axios.get(`/comment/get-comment/${id}`)
-        comment.value = res.data
-    }
-    catch (err) {
-        store.commit("addError", err.response.data.error)
-    }
-}
-
 onMounted(async () => {
-    await loadComment(props.comment.id)
+    comment.value = props.comment
 })
 </script>
 
@@ -175,5 +168,15 @@ onMounted(async () => {
 
 .footer .likes .like-deck p {
     margin-right: -5px;
+}
+
+.del {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.del img {
+    height: 15px;
 }
 </style>

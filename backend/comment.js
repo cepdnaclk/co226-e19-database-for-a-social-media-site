@@ -13,9 +13,11 @@ const route = (db) => {
       [postId],
       (err, results) => {
         if (err) {
+          console.log(err);
           return res.status(500).json({ error: "Database error" });
         }
         if (results.length === 0) {
+          console.log(err);
           return res.status(404).json({ error: "Post not found" });
         }
         next();
@@ -25,29 +27,7 @@ const route = (db) => {
 
   router.get("/get/:postid", (req, res) => {
     const postId = req.params.postid; // Get the post ID from the route parameter
-
-    // Query to fetch comments for the specified post
-    db.query(
-      "SELECT c.c_id " + "FROM comment AS c " + "WHERE c.post_id = ?",
-      [postId],
-      (err, results) => {
-        if (err) {
-          return res.status(500).json({ error: "Database error" });
-        }
-        if (results.length == 1 && results[0].c_id == null) return;
-
-        const comments = results.map((com) => ({
-          id: com.c_id,
-        }));
-
-        // Return the comments for the specified post
-        res.status(200).json(comments);
-      }
-    );
-  });
-
-  router.get("/get-comment/:commentid", auth, (req, res) => {
-    const commentId = req.params.commentid; // Get the comment ID from the route parameter
+    console.log(postId);
 
     db.query(
       `
@@ -75,15 +55,16 @@ const route = (db) => {
         ) AS temp
         GROUP BY comment_id
       ) AS lt ON lt.comment_id = c.c_id
-      WHERE c.c_id = ?;
+      WHERE c.post_id = ?;
     `,
-      [commentId],
+      [postId],
       (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).json({ error: "Database error" });
         }
         if (results.length === 0) {
+          console.log(err);
           return res.status(404).json({ error: "Comment not found" });
         }
 
@@ -107,7 +88,7 @@ const route = (db) => {
         }));
 
         // Return the comment details
-        res.status(200).json(comment[0]);
+        res.status(200).json(comment);
       }
     );
   });
@@ -117,7 +98,6 @@ const route = (db) => {
     const userId = req.user.u_id;
     const postId = req.body.p_id;
     const content = req.body.content;
-
     const comment = {
       c_time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
       c_date: new Date().getDate(),
@@ -146,6 +126,7 @@ const route = (db) => {
       [commentId],
       (err, results) => {
         if (err) {
+          console.log(err);
           return res.status(500).json({ error: "Database error" });
         }
         res

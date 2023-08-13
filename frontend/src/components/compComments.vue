@@ -18,12 +18,11 @@
 
 <script setup>
 import axios from "axios"
-import { onMounted, ref, watch } from "vue"
+import { onMounted, onUnmounted, ref, watch } from "vue"
 import { useStore } from "vuex"
 import compComment from "./compComment.vue"
 
-const props = defineProps(['postId'])
-const emits = defineEmits(['close', 'change'])
+const emits = defineEmits(['close'])
 const store = useStore()
 const close = () => { emits('close') }
 
@@ -31,34 +30,35 @@ const content = ref("")
 
 const comments = ref([])
 
-const getComments = async (id) => {
-    try {
-        const res = await axios.get(`/comment/get/${id}`)
-        return res.data
-    }
-    catch (err) {
-        store.commit("addError", err.response.data.error)
-    }
-}
-
-const sendComment = async () => {
-    try {
-        await axios.post(`/comment/add`, {
-            p_id: props.postId,
-            content: content.value
+const getComments = (id) => {
+    axios.get(`/comment/get/${id}`, {
+        retry: 3, // Number of retry attempts
+        retryDelay: 1000, // Delay between retries in milliseconds
+        timeout: 5000 //
+    })
+        .then((res) => {
+            console.log(res.data)
+            comments.value = res.data
+        }).catch((err) => {
+            store.commit("addError", err.response.data.error)
         })
-        content.value = ""
-        comments.value = await getComments(props.postId)
-        emits('change')
-    }
-    catch (err) {
-        store.commit("addError", err.response.data.error)
-    }
 }
 
-onMounted(async () => {
-    await setTimeout(() => { }, 100)
-    comments.value = await getComments(props.postId)
+const sendComment = () => {
+    axios.post(`/comment/add`, {
+        p_id: props.postId,
+        content: content.value
+    }).then(async () => {
+        content.value = ""
+        comments.value = await getComments(store.state.currComPost)
+        emits('change')
+    }).catch((err) => {
+        store.commit("addError", err.response.data.error)
+    })
+}
+
+onMounted(() => {
+    getComments(store.state.currComPost)
 })
 
 const autoResizeTextarea = ref(null);

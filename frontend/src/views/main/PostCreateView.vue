@@ -252,6 +252,7 @@ onMounted(() => {
     padding: 1rem 0 0;
     width: 100%;
     object-fit: contain;
+    max-height: 400px;
 }
 
 .post .post-actions {

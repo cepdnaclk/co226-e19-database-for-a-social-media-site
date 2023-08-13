@@ -44,7 +44,6 @@
                         <span>{{ post.commentCount }} comments</span>
                     </div>
                 </button>
-                <comp-comments v-if="showComment" :postId="post.id" @close="viewComment" @change="getPost" />
             </div>
         </transition>
     </div>
@@ -55,7 +54,6 @@ import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import compLikeMenu from './compLikeMenu.vue';
-import compComments from './compComments.vue'
 import compPostShare from './compPostShare.vue';
 import { useRouter } from 'vue-router';
 
@@ -64,9 +62,9 @@ const post = ref({})
 const store = useStore()
 const router = useRouter()
 
-const showComment = ref(false)
 const viewComment = () => {
-    showComment.value = !showComment.value
+    store.state.currComPost = post.value.id
+    store.commit("showComments")
 }
 const likes = ref([
     {
@@ -225,10 +223,12 @@ onMounted(async () => {
     border: 5px solid white;
 }
 
-.post .image-content>img {
+.post .image-content>img,
+.post .image-content>video {
     padding: 1rem 0 0;
     width: 100%;
     object-fit: contain;
+    max-height: 400px;
 }
 
 .post .post-actions {

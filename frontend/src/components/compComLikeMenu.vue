@@ -130,7 +130,6 @@ const removeLike = async () => {
 
 onMounted(async () => {
     await setTimeout(() => { }, 100)
-    console.log(props.commentID)
     const index = await getLike(props.commentID)
     like.value = likes[index]
 })

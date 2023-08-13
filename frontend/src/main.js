@@ -7,6 +7,8 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:3010";
 
+axios.defaults.headers.common["Content-Type"] = "application/json";
+
 axios.interceptors.response.use(
   (response) => {
     // Handle successful responses
@@ -22,6 +24,7 @@ axios.interceptors.response.use(
       axios.defaults.headers = "";
       store.commit("addError", "Session has expired");
       router.push("/login");
+      console.log("Access denied");
       return Promise.resolve("");
     }
     return Promise.reject(error);
