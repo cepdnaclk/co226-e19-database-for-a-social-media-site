@@ -22,6 +22,7 @@ axios.interceptors.response.use(
       axios.defaults.headers = "";
       store.commit("addError", "Session has expired");
       router.push("/login");
+      return Promise.resolve("");
     }
     return Promise.reject(error);
   }

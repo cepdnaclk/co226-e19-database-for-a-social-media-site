@@ -13,38 +13,14 @@
                         <img src="@/assets/Time_light.png" alt="">
                         <p>{{ post.date }}</p>
                     </div>
-                    <button class="del" v-if="post.uname == store.state.user.user_name" @click="deletePost">
-                        <img src="https://th.bing.com/th/id/R.6c6076b5539e080de7f08ca78b915d92?rik=XwvNBEqhthlBug&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_408479.png&ehk=QaDRFwORrQoYDEsEYfH%2bwUwF4%2bqfRV6UHFVOz4qzksM%3d&risl=&pid=ImgRaw&r=0"
-                            alt="">
-                    </button>
                 </div>
                 <div class="post-text">
                     <pre>{{ post.content }}</pre>
                 </div>
                 <div class="image-content">
-                    <img v-if="post.m_type == 0" :src="post.media" alt="">
-                    <video v-if="post.m_type == 1" :src="post.media" controls></video>
-                    <comp-post-share v-if="post.m_type == 2" :post="post.media" />
+                    <img v-if="!post.m_type" :src="post.media" alt="">
+                    <video v-else :src="post.media" controls></video>
                 </div>
-                <div class="post-actions">
-                    <comp-like-menu v-if="post.id" :postId="post.id" @change="getPost" />
-                    <button @click="viewComment"><img src="@/assets/comment.png" alt=""></button>
-                    <button @click="sharePost"><img src="@/assets/share.png" alt=""></button>
-                </div>
-                <button class="post-footer" @click="viewComment">
-                    <div class="likes" v-if="post.likeCount">
-                        <div class="like-deck">
-                            <p v-for="(type, index) in post.likeTypes.slice(0, 3)" :key="index">
-                                {{ likes[type - 1] ? likes[type - 1].emoji : '' }}
-                            </p>
-                        </div>
-                        <span>{{ post.likeCount }}</span>
-                    </div>
-                    <div class="comments">
-                        <span>{{ post.commentCount }} comments</span>
-                    </div>
-                </button>
-                <comp-comments v-if="showComment" :postId="post.id" @close="viewComment" @change="getPost" />
             </div>
         </transition>
     </div>
@@ -54,104 +30,40 @@
 import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
-import compLikeMenu from './compLikeMenu.vue';
-import compComments from './compComments.vue'
-import compPostShare from './compPostShare.vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps(['post'])
 const post = ref({})
 const store = useStore()
-const router = useRouter()
-
-const showComment = ref(false)
-const viewComment = () => {
-    showComment.value = !showComment.value
-}
-const likes = ref([
-    {
-        id: 1,
-        name: 'like',
-        emoji: '👍',
-    },
-    {
-        id: 2,
-        name: 'love',
-        emoji: '❤️',
-    },
-    {
-        id: 3,
-        name: 'ha ha',
-        emoji: '😄',
-    },
-    {
-        id: 4,
-        name: 'wow',
-        emoji: '😲',
-    },
-    {
-        id: 5,
-        name: 'sad',
-        emoji: '😢',
-    },
-    {
-        id: 6,
-        name: 'angry',
-        emoji: '😡',
-    },
-])
 
 const getPost = async () => {
     try {
-        const res = await axios.get(`/post/get/${props.post.id}`)
+        const res = await axios.get(`/post/get/${props.post}`)
         post.value = res.data
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
 }
-
-const deletePost = async () => {
-    axios.delete(`/post/delete`, {
-        data: {
-            p_id: post.value.id
-        }
-    }).then((res) => {
-
-        store.commit("addSuccess", "post deleted")
-    }).catch((err) => {
-        store.commit("addError", err.response.data.error)
-    })
-}
-
-const sharePost = () => {
-    router.push({
-        name: "createPost",
-        query: {
-            post: post.value.id
-        }
-    })
-}
-
-onMounted(async () => {
-    await getPost()
+onMounted(() => {
+    getPost()
 })
 </script>
 
 <style scoped>
 .post-container {
     position: relative;
+    padding: 10px;
 }
 
 .placeholder {
     width: 100%;
-    min-width: 450px;
+    min-width: 430px;
     max-width: 550px;
 }
 
 .post {
     background: white;
-    min-width: 450px;
+    min-width: 420px;
     max-width: 550px;
     width: 100%;
 }
@@ -207,22 +119,9 @@ onMounted(async () => {
     margin-right: 5px;
 }
 
-.post .post-header .del {
-    margin-left: 10px;
-}
-
-.post .post-header .del img {
-    height: 15px;
-}
-
 .post .post-text {
     padding: 1rem 1.5rem;
     font-weight: 300;
-}
-
-.post .image-content {
-    background: #ddd;
-    border: 5px solid white;
 }
 
 .post .image-content>img {

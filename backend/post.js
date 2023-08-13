@@ -102,8 +102,8 @@ const route = (db) => {
   });
 
   // DELETE route to delete a post
-  router.delete("/delete/:postid", auth, (req, res) => {
-    const postId = req.params.p_id; // Assuming the post ID is provided as a route parameter
+  router.delete("/delete", auth, (req, res) => {
+    const postId = req.body.p_id; // Assuming the post ID is provided as a route parameter
     const userId = req.user.u_id; // Assuming the user ID is provided in the request body
     db.query(
       "SELECT user_id FROM post WHERE p_id = ?",
@@ -115,7 +115,7 @@ const route = (db) => {
         if (results.length === 0) {
           return res.status(404).json({ error: "Post not found" });
         }
-        const postUserId = results[0].u_id;
+        const postUserId = results[0].user_id;
         if (postUserId !== userId) {
           return res
             .status(403)

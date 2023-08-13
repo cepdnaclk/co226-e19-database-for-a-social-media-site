@@ -17,10 +17,11 @@
                     <textarea ref="autoResizeTextarea" v-model="content" placeholder="Add a caption"></textarea>
                 </div>
                 <div class="media-content">
-                    <img v-if="!m_type"
+                    <img v-if="m_type == 0"
                         :src="filePreview || 'https://www.bluecoatacademy.org/wp-content/themes/absolutebyte/assets/images/placeholder-image.jpg'"
                         alt="">
-                    <video v-else :src="filePreview" controls></video>
+                    <video v-if="m_type == 1" :src="filePreview" controls></video>
+                    <comp-post-share v-if="m_type == 2 && post" :post="post" />
                 </div>
                 <div class="post-actions">
                     <button><img src="@/assets/heart.png" alt=""></button>
@@ -57,6 +58,7 @@ import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import compPostShare from "@/components/compPostShare.vue";
 
 const router = useRouter()
 const route = useRoute()
@@ -74,6 +76,7 @@ const fileURL = ref("")
 const filePreview = ref()
 const m_type = ref(0)
 const visibility = ref("")
+const post = ref("")
 
 
 // content input auto resize
@@ -83,7 +86,6 @@ const adjustTextareaHeight = () => {
     const textarea = autoResizeTextarea.value;
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
-    console.log(textarea.scrollHeight)
 };
 
 watch(content, adjustTextareaHeight);
@@ -143,11 +145,9 @@ const postSend = async () => {
 
 onMounted(() => {
     if (route.query.post) {
-        const post = JSON.parse(route.query.post)
-        content.value = post.content
-        fileURL.value = post.url
-        filePreview.value = post.url
-        content.value += `\n\nreposted from @${post.uname}`
+        post.value = route.query.post
+        m_type.value = 2
+        fileURL.value = post.value
         adjustTextareaHeight()
     }
 })
@@ -240,6 +240,11 @@ onMounted(() => {
 
 .post .post-text textarea:focus {
     outline: none;
+}
+
+.post .media-content {
+    background: #ddd;
+    border: 5px solid white;
 }
 
 .post .media-content img,
