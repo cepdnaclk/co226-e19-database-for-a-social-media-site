@@ -30,13 +30,13 @@ export default createStore({
       state.token = payload.token;
       state.isAuthenticated = true;
       state.user = payload.user;
-      axios.defaults.headers.common["Authorization"] = payload.token;
+      axios.defaults.headers.common["authorization"] = payload.token;
     },
     setLogout(state) {
       state.token = "";
       state.user = "";
       state.isAuthenticated = false;
-      axios.defaults.headers.common["Authorization"] = "";
+      axios.defaults.headers.common["authorization"] = "";
     },
     showComments(state) {
       console.log("store");

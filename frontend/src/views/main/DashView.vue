@@ -36,6 +36,7 @@ import compPost from '@/components/compPost.vue';
 import compComment from '@/components/compComment.vue';
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
+import io from "socket.io-client"
 
 const store = useStore()
 
@@ -66,6 +67,20 @@ const getFriends = async () => {
 onMounted(async () => {
     posts.value = await getPosts()
     friends.value = await getFriends()
+
+    const socket = io('http://localhost:3011/post'); // Change the URL to match your server and namespace
+
+    // Listen for new post event
+    socket.on('newPost', (newPost) => {
+        console.log("added")
+        posts.value.unshift(newPost);
+    });
+
+    // Listen for deleted post event
+    socket.on('deletedPost', (deletedPostId) => {
+        posts.value = posts.value.filter(post => post.id !== deletedPostId);
+    });
+
 })
 
 </script>

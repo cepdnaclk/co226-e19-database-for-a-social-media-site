@@ -7,7 +7,7 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:3010";
 
-axios.defaults.headers.common["Content-Type"] = "application/json";
+axios.defaults.headers.common["content-type"] = "application/json";
 
 axios.interceptors.response.use(
   (response) => {
