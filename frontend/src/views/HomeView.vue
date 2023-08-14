@@ -18,7 +18,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import compPopMenu from "@/components/compPopMenu.vue";
 
 </script>

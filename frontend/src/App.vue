@@ -15,11 +15,8 @@ import compSuccessAlert from './components/compSuccessAlert.vue';
 import CompErrorAlert from './components/compErrorAlert.vue';
 import compComments from './components/compComments.vue'
 import { useStore } from 'vuex';
-import { ref } from 'vue';
 
 const store = useStore()
-
-const showComment = ref(false)
 </script>
 
 <style>

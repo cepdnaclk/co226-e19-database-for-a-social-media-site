@@ -42,6 +42,7 @@
 import axios from "axios";
 import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
+import io from "socket.io-client"
 
 const search = ref("")
 const loading = ref(false)
@@ -147,6 +148,42 @@ const unfriend = async (id, name) => {
 onMounted(async () => {
     users.value = await getUsers("%")
     requests.value = await getRequest()
+
+    const socket = io('http://localhost:3011/friendreq'); // Change the URL to match your server and namespace
+
+    // Listen for new post event
+    socket.on('sendRequest', async (requesteeId) => {
+        console.log("got", requesteeId, store.state.user.u_id)
+        if (requesteeId == store.state.user.u_id) {
+            requests.value = await getRequest()
+        }
+
+    });
+
+    // Listen for deleted post event
+    socket.on('cancelRequest', async (requesteeId) => {
+        if (requesteeId == store.state.user.u_id) {
+            requests.value = await getRequest()
+        }
+    });
+
+    socket.on('rejectRequest', async (requesterId, requesteeId) => {
+        if (requesterId == store.state.user.u_id) {
+            users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+        }
+    });
+
+    socket.on('acceptRequest', async (requesterId, requesteeId) => {
+        if (requesterId == store.state.user.u_id) {
+            users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+        }
+    });
+
+    socket.on('unfriend', async (friendId, userId) => {
+        if (friendId == store.state.user.u_id) {
+            users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+        }
+    });
 })
 </script>
 

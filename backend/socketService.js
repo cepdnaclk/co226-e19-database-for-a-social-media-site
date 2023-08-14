@@ -23,6 +23,7 @@ const initSocketIO = (httpServer) => {
   namespaces.post = io.of("/post");
   namespaces.postLike = io.of("/post-like");
   namespaces.comment = io.of("/comment");
+  namespaces.friendreq = io.of("/friendreq");
   // Add more namespaces if needed
 
   // Set up event handling for each namespace
