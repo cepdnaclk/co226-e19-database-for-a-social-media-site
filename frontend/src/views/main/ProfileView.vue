@@ -135,7 +135,7 @@ onMounted(async () => {
     profile.value = await getProfile()
     posts.value = await getPosts(profile.value.u_id)
 
-    const socket = io('https://peralink-backend.onrender.com:3011/post'); // Change the URL to match your server and namespace
+    const socket = io('https://peralink-backend.onrender.com/post'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socket.on('newPost', (newPost) => {

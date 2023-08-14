@@ -64,7 +64,7 @@ const sendComment = () => {
 onMounted(() => {
     getComments(store.state.currComPost)
 
-    const socketCom = io('https://peralink-backend.onrender.com:3011/comment'); // Change the URL to match your server and namespace
+    const socketCom = io('https://peralink-backend.onrender.com/comment'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socketCom.on('newComment', (PostId) => {

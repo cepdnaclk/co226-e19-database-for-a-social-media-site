@@ -165,7 +165,7 @@ onMounted(async () => {
     users.value = await getUsers("%")
     requests.value = await getRequest()
 
-    const socket = io('https://peralink-backend.onrender.com:3011/friendreq'); // Change the URL to match your server and namespace
+    const socket = io('https://peralink-backend.onrender.com/friendreq'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socket.on('sendRequest', async (requesteeId) => {
