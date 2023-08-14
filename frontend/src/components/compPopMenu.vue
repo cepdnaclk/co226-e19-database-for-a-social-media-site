@@ -6,14 +6,16 @@
                 <img :src="user.profile_picture" alt="">
                 <h3 class="pc">{{ user.first_name }} {{ user.last_name }}</h3>
             </button>
-            <div v-if="showMenu" class="menu">
-                <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
-                <p>@{{ user.user_name }}</p>
-                <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
-                    View Profile
-                </router-link>
-                <button class="btn logout" @click="logout">Log out</button>
-            </div>
+            <transition name="fade">
+                <div v-if="showMenu" class="menu">
+                    <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
+                    <p>@{{ user.user_name }}</p>
+                    <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
+                        View Profile
+                    </router-link>
+                    <button class="btn logout" @click="logout">Log out</button>
+                </div>
+            </transition>
         </div>
     </div>
 </template>

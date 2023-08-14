@@ -13,7 +13,11 @@
         <comp-pop-menu />
       </div>
     </div>
-    <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <transition name="slide" mode="out-in">
+        <component :is="Component"></component>
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -89,5 +93,25 @@ import compPopMenu from "@/components/compPopMenu.vue";
     display: none;
   }
 
+}
+
+
+/* Slide from bottom transition */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.2s ease;
+}
+
+.slide-enter
+
+/* .slide-leave-active in <2.1.8 */
+  {
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+.slide-leave-to {
+  transform: translateY(-100px);
+  opacity: 0;
 }
 </style>

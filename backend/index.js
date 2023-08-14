@@ -74,8 +74,6 @@ app.use("/profile", displayProfile);
 app.use("/media", mediaUpload);
 app.use("/friend_request", friend_request);
 
-app.use(express.static(path.join(__dirname, "public")));
-
 // Start the server
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

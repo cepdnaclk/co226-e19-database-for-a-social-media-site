@@ -70,27 +70,3 @@ export default createStore({
 function saveStateToLocalStorage(state) {
   localStorage.setItem("myAppState", JSON.stringify(state));
 }
-
-// Retrieve state from localStorage
-function loadStateFromLocalStorage() {
-  const stateJson = localStorage.getItem("myAppState");
-  console.log(stateJson);
-  if (stateJson) {
-    const state = JSON.parse(stateJson);
-    if (state.token != "") {
-      axios.defaults.headers.common["Authorization"] = state.token;
-    }
-    state.errList = [];
-    state.sucList = [];
-    return state;
-  } else {
-    return {
-      sucList: [],
-      errList: [],
-      isAuthenticated: false,
-      token: "",
-      user: Object,
-      currentSignupUser: "",
-    };
-  }
-}

@@ -81,7 +81,8 @@ button {
   position: absolute;
 }
 
-.fade-leave-to {
+.fade-leave-to,
+.fade-enter-from {
   opacity: 0;
 }
 </style>

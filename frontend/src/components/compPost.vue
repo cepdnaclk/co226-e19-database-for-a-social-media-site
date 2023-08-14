@@ -173,12 +173,14 @@ onMounted(async () => {
 <style scoped>
 .post-container {
     position: relative;
+    width: 100%;
 }
 
 .placeholder {
     width: 100%;
     min-width: 450px;
     max-width: 550px;
+    position: absolute;
 }
 
 .post {
@@ -351,5 +353,16 @@ onMounted(async () => {
     .post .post-footer img {
         height: 0.8rem;
     }
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-leave-to,
+.fade-enter-from {
+    opacity: 0;
 }
 </style>
