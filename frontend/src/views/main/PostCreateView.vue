@@ -118,7 +118,6 @@ const postSend = async () => {
 
     try {
         const date = new Date(Date.now())
-
         if (file.value) {
             const res = await axios.post("/media/upload", formdata, {
                 headers: {

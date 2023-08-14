@@ -41,7 +41,6 @@ app.use(function (req, res, next) {
 // Export Database connection to the routes
 module.exports = db;
 const port = 3010;
-const serverURL = `http://localhost:${port}/`;
 
 // routes
 const login = require("./login")(db, secret.secreteKey); // route for login
@@ -50,13 +49,13 @@ const update_profile = require("./update_profile")(db); // route for additional 
 const search_friend = require("./search_friend")(db); // route for search and view profiles of friends
 const search_global = require("./search_global")(db); // route for search and view profiles of any user
 const post_feed = require("./post_feed")(db); // route for post feed
-const profile_picture = require("./profile_picture")(db, serverURL); // route for handling profile pics
+const profile_picture = require("./profile_picture")(db); // route for handling profile pics
 const post = require("./post")(db); // route for post handling
 const post_like = require("./post_like")(db); // route for like handling related to posts
 const comment = require("./comment")(db); // route for comment handling related to posts
 const comment_like = require("./comment_like")(db); // route for like handling related to comments
 const displayProfile = require("./display_profile")(db);
-const mediaUpload = require("./media_upload")(serverURL);
+const mediaUpload = require("./media_upload")(db);
 const friend_request = require("./friend_request");
 
 // Use the routes

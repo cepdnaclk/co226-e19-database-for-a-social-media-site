@@ -1,16 +1,19 @@
 <template>
-    <div class="pop-menu">
-        <button class="profile" @click="toggleMenu">
-            <img :src="user.profile_picture" alt="">
-            <h3 class="pc">{{ user.first_name }} {{ user.last_name }}</h3>
-        </button>
-        <div v-if="showMenu" class="menu">
-            <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
-            <p>@{{ user.user_name }}</p>
-            <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
-                View Profile
-            </router-link>
-            <button class="btn logout" @click="logout">Log out</button>
+    <div>
+        <div class="close" @click="toggleMenu" v-if="showMenu"></div>
+        <div class="pop-menu">
+            <button class="profile" @click="toggleMenu">
+                <img :src="user.profile_picture" alt="">
+                <h3 class="pc">{{ user.first_name }} {{ user.last_name }}</h3>
+            </button>
+            <div v-if="showMenu" class="menu">
+                <h3 class="mobile">{{ user.first_name }} {{ user.last_name }}</h3>
+                <p>@{{ user.user_name }}</p>
+                <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
+                    View Profile
+                </router-link>
+                <button class="btn logout" @click="logout">Log out</button>
+            </div>
         </div>
     </div>
 </template>
@@ -45,6 +48,16 @@ onUpdated(() => {
 <style scoped>
 .pop-menu {
     position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: -1;
+    background: #00000033;
 }
 
 .profile {

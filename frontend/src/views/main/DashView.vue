@@ -72,7 +72,6 @@ onMounted(async () => {
 
     // Listen for new post event
     socket.on('newPost', (newPost) => {
-        console.log("added")
         posts.value.unshift(newPost);
     });
 
