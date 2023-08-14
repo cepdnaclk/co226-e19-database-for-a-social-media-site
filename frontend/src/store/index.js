@@ -11,6 +11,7 @@ export default createStore({
     currentSignupUser: "",
     showComment: false,
     currComPost: 0,
+    loading: false,
   },
   getters: {},
   mutations: {

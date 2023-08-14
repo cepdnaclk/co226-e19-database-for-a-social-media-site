@@ -135,7 +135,7 @@ const sharePost = () => {
 onMounted(async () => {
     await getPost()
 
-    const socket = io('http://localhost:3011/post-like'); // Change the URL to match your server and namespace
+    const socket = io('https://peralink-backend.onrender.com:3011/post-like'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socket.on('newPostLike', (PostId) => {
@@ -152,7 +152,7 @@ onMounted(async () => {
     });
 
 
-    const socketCom = io('http://localhost:3011/comment'); // Change the URL to match your server and namespace
+    const socketCom = io('https://peralink-backend.onrender.com:3011/comment'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socketCom.on('newComment', (PostId) => {

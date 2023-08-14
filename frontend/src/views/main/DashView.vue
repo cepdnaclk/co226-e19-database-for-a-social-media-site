@@ -45,30 +45,36 @@ const friends = ref([])
 const user = store.state.user
 
 const getPosts = async () => {
+    store.state.loading = true
     try {
         const result = await axios.get(`/post_feed/`);
+        store.state.loading = false
         return result.data
     }
     catch (err) {
         console.log(err)
     }
+    store.state.loading = false
 }
 
 const getFriends = async () => {
+    store.state.loading = true
     try {
         const result = await axios.get(`/search_friend/all`);
+        store.state.loading = false
         return result.data
     }
     catch (err) {
         console.log(err)
     }
+    store.state.loading = false
 }
 
 onMounted(async () => {
     posts.value = await getPosts()
     friends.value = await getFriends()
 
-    const socket = io('http://localhost:3011/post'); // Change the URL to match your server and namespace
+    const socket = io('https://peralink-backend.onrender.com:3011/post'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socket.on('newPost', (newPost) => {

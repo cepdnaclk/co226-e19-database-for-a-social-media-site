@@ -276,6 +276,7 @@ const interests = computed(() => {
 const prePropic = ref("")
 
 const getUser = async () => {
+    store.state.loading = true
     try {
         const res = await axios.get(`/profile/${store.state.user.user_name}`)
         const user = res.data
@@ -297,19 +298,24 @@ const getUser = async () => {
     catch (err) {
         store.commit("addError", err)
     }
+    store.state.loading = false
 }
 
 const getUserFinal = async () => {
+    store.state.loading = true
     try {
         const res = await axios.get(`/profile/${store.state.user.user_name}`)
+        store.state.loading = false
         return res.data
     }
     catch (err) {
         store.commit("addError", err)
     }
+    store.state.loading = false
 }
 
 const submit = async () => {
+    store.state.loading = true
     const formdata = new FormData()
     formdata.append('profile_picture', file.value)
 
@@ -344,12 +350,13 @@ const submit = async () => {
         })
 
         store.state.user = await getUserFinal()
-        console.log(store.state.user)
+        store.state.loading = false
         router.push(`/profile/${store.state.user.user_name}`)
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 onMounted(async () => {

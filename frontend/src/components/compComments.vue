@@ -33,6 +33,7 @@ const content = ref("")
 const comments = ref([])
 
 const getComments = (id) => {
+    store.state.loading = true
     comments.value = []
     axios.get(`/comment/get/${id}`, {
         retry: 3, // Number of retry attempts
@@ -40,14 +41,15 @@ const getComments = (id) => {
         timeout: 5000 //
     })
         .then((res) => {
-            console.log(res.data)
             comments.value = res.data
         }).catch((err) => {
             store.commit("addError", err.response.data.error)
         })
+    store.state.loading = false
 }
 
 const sendComment = () => {
+    store.state.loading = true
     axios.post(`/comment/add`, {
         p_id: store.state.currComPost,
         content: content.value
@@ -56,12 +58,13 @@ const sendComment = () => {
     }).catch((err) => {
         store.commit("addError", err.response.data.error)
     })
+    store.state.loading = false
 }
 
 onMounted(() => {
     getComments(store.state.currComPost)
 
-    const socketCom = io('http://localhost:3011/comment'); // Change the URL to match your server and namespace
+    const socketCom = io('https://peralink-backend.onrender.com:3011/comment'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socketCom.on('newComment', (PostId) => {

@@ -113,6 +113,7 @@ const videoHandle = (e) => {
 }
 
 const postSend = async () => {
+    store.state.loading = true
     const formdata = new FormData()
     formdata.append('media', file.value)
 
@@ -135,11 +136,13 @@ const postSend = async () => {
             private: visibility.value ? 1 : 0
         })
 
+        store.state.loading = false
         router.push("/")
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 onMounted(() => {

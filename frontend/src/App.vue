@@ -6,6 +6,9 @@
     <transition name="alert">
       <comp-error-alert v-if="store.state.errList.length" :msg="store.state.errList[0]" />
     </transition>
+    <transition name="fade">
+      <comp-loading v-if="store.state.loading" />
+    </transition>
     <router-view />
     <comp-comments v-if="store.state.showComment" @close="store.commit('showComments')" />
   </div>
@@ -14,6 +17,7 @@
 import compSuccessAlert from './components/compSuccessAlert.vue';
 import CompErrorAlert from './components/compErrorAlert.vue';
 import compComments from './components/compComments.vue'
+import compLoading from './components/compLoading.vue';
 import { useStore } from 'vuex';
 
 const store = useStore()

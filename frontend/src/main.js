@@ -5,7 +5,7 @@ import router from "./router";
 import store from "./store";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:3010";
+axios.defaults.baseURL = "https://peralink-backend.onrender.com";
 
 axios.defaults.headers.common["content-type"] = "application/json";
 axios.defaults.headers.common["Authorization"] = "";

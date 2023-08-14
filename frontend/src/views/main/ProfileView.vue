@@ -61,26 +61,33 @@ const dob = computed(() => {
 })
 
 const getProfile = async () => {
+    store.state.loading = true
     try {
         const res = await axios.get(`/profile/${username.value}`)
+        store.state.loading = false
         return res.data
     }
     catch (err) {
         store.commit("addError", err.response.data.message)
     }
+    store.state.loading = false
 }
 
 const getPosts = async (id) => {
+    store.state.loading = true
     try {
         const result = await axios.get(`/post_feed/profile/${id}`);
+        store.state.loading = false
         return result.data
     }
     catch (err) {
         console.log(err)
     }
+    store.state.loading = false
 }
 
 const sendRequest = async (id) => {
+    store.state.loading = true
     try {
         await axios.post("/friend_request/send", {
             friend_id: id
@@ -91,9 +98,11 @@ const sendRequest = async (id) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const cancelRequest = async (id) => {
+    store.state.loading = true
     try {
         await axios.delete("/friend_request/cancel", {
             data: { friend_id: id }
@@ -104,9 +113,11 @@ const cancelRequest = async (id) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const unfriend = async (id, name) => {
+    store.state.loading = true
     try {
         await axios.delete("/friend_request/unfriend", {
             data: { friend_id: id }
@@ -117,13 +128,14 @@ const unfriend = async (id, name) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 onMounted(async () => {
     profile.value = await getProfile()
     posts.value = await getPosts(profile.value.u_id)
 
-    const socket = io('http://localhost:3011/post'); // Change the URL to match your server and namespace
+    const socket = io('https://peralink-backend.onrender.com:3011/post'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socket.on('newPost', (newPost) => {

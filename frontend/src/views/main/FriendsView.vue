@@ -57,30 +57,37 @@ watch(search, async () => {
 })
 
 const getUsers = async (query) => {
+    store.state.loading = true
     try {
         const response = await axios.get("/search_global/", {
             params: {
                 q: query,
             }
         })
+        store.state.loading = false
         return response.data
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const getRequest = async () => {
+    store.state.loading = true
     try {
         const res = await axios.get("/friend_request/")
+        store.state.loading = false
         return res.data
     }
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const sendRequest = async (id) => {
+    store.state.loading = true
     try {
         await axios.post("/friend_request/send", {
             friend_id: id
@@ -91,9 +98,11 @@ const sendRequest = async (id) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const cancelRequest = async (id) => {
+    store.state.loading = true
     try {
         await axios.delete("/friend_request/cancel", {
             data: { friend_id: id }
@@ -104,9 +113,11 @@ const cancelRequest = async (id) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const acceptRequest = async (id, name) => {
+    store.state.loading = true
     try {
         await axios.post("/friend_request/accept", {
             friend_id: id
@@ -118,9 +129,11 @@ const acceptRequest = async (id, name) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const rejectRequest = async (id) => {
+    store.state.loading = true
     try {
         await axios.delete("/friend_request/reject", {
             data: { friend_id: id }
@@ -130,9 +143,11 @@ const rejectRequest = async (id) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 const unfriend = async (id, name) => {
+    store.state.loading = true
     try {
         await axios.delete("/friend_request/unfriend", {
             data: { friend_id: id }
@@ -143,13 +158,14 @@ const unfriend = async (id, name) => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 onMounted(async () => {
     users.value = await getUsers("%")
     requests.value = await getRequest()
 
-    const socket = io('http://localhost:3011/friendreq'); // Change the URL to match your server and namespace
+    const socket = io('https://peralink-backend.onrender.com:3011/friendreq'); // Change the URL to match your server and namespace
 
     // Listen for new post event
     socket.on('sendRequest', async (requesteeId) => {
