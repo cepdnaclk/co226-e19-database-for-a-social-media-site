@@ -16,14 +16,16 @@
 </template>
 
 <script setup>
-import { onUpdated, ref } from "vue";
+import { computed, onUpdated, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 const store = useStore()
 const router = useRouter()
 
-const user = ref(store.state.user)
+const user = computed(() => {
+    return store.state.user
+})
 
 const showMenu = ref(false)
 const toggleMenu = () => {

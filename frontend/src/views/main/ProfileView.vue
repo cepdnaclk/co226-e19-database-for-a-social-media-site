@@ -1,11 +1,12 @@
 <template>
-    <div class="profile">
+    <div class="profile" v-if="profile.user_name">
         <div class="left">
             <router-link class="back" to="/find-friends"><img src="../../assets/Arrow_left.png" alt=""></router-link>
             <img class="prof-pic" :src="profile.profile_picture" alt="">
             <h4>{{ profile.first_name }} {{ profile.last_name }}</h4>
             <p class="uname">@{{ profile.user_name }}</p>
-            <button class="request" v-if="!profile.is_friend && !profile.sent_request"
+            <button class="request"
+                v-if="!profile.is_friend && !profile.sent_request && store.state.user.user_name != route.params.username"
                 @click="sendRequest(profile.u_id)">Send
                 Request</button>
             <button class="request cancel" v-else-if="!profile.is_friend && profile.sent_request"

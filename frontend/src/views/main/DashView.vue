@@ -9,7 +9,7 @@
                 <div class="comm-deck">
                     <div class="friends">
                         <h2>Friends</h2>
-                        <div class="friend-deck">
+                        <div class="friend-deck" v-if="friends">
                             <router-link :to="`profile/${friend.user_name}`" class="profile" v-for="friend in friends"
                                 :key="friend.user_name">
                                 <img :src="friend.profile_picture" alt="">

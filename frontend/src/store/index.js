@@ -30,23 +30,32 @@ export default createStore({
       state.token = payload.token;
       state.isAuthenticated = true;
       state.user = payload.user;
-      axios.defaults.headers.common["Authorization"] = payload.token;
+      axios.defaults.headers.common["authorization"] = payload.token;
     },
     setLogout(state) {
-      state.currComPost = false;
       state.token = "";
       state.user = "";
       state.isAuthenticated = false;
-      axios.defaults.headers.common["Authorization"] = "";
+      axios.defaults.headers.common["authorization"] = "";
     },
     showComments(state) {
       state.showComment = !state.showComment;
     },
   },
-  actions: {},
+  actions: {
+    async loadState({ commit }) {
+      const stateJson = localStorage.getItem("myAppState");
+      if (stateJson) {
+        const state = JSON.parse(stateJson);
+        commit("setLogin", {
+          token: state.token,
+          user: state.user,
+          tokenExpiration: state.tokenExpiration,
+        });
+      }
+    },
+  },
   modules: {},
-  // Load initial state from localStorage
-  state: loadStateFromLocalStorage(),
   // Subscribe to mutations to save state to localStorage
   plugins: [
     (store) => {
@@ -65,6 +74,7 @@ function saveStateToLocalStorage(state) {
 // Retrieve state from localStorage
 function loadStateFromLocalStorage() {
   const stateJson = localStorage.getItem("myAppState");
+  console.log(stateJson);
   if (stateJson) {
     const state = JSON.parse(stateJson);
     if (state.token != "") {

@@ -229,7 +229,9 @@ const Locations = computed(async () => {
 
     try {
         let locations = []
-        const response = await axios.get(baseUrl, { params });
+        const response = await axios.get(baseUrl, { params }, {
+            headers: {},
+        });
 
         // Process the data (example: print place names)
         response.data.forEach(place => {
@@ -312,11 +314,12 @@ const submit = async () => {
     formdata.append('profile_picture', file.value)
 
     try {
+        let resFile = ""
         if (file.value && prePropic.value !== file.value) {
             if (prePropic.value !== "") {
                 await axios.delete("/profile_picture/delete")
             }
-            await axios.put("/profile_picture/update", formdata, {
+            resFile = await axios.put("/profile_picture/update", formdata, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -336,7 +339,8 @@ const submit = async () => {
             location: loc.value,
             bio: bio.value,
             interests: interests.value,
-            affiliation: affiliation.value
+            affiliation: affiliation.value,
+            profile_picture: resFile ? resFile.data.downloadURL : prePropic.value
         })
 
         store.state.user = await getUserFinal()

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="requests" v-if="requests.length">
+        <div class="requests" v-if="requests && requests.length">
             <h3>Friend Requests</h3>
             <div class="request" v-for="(request, index) in requests" :key="index">
                 <router-link class="profpic" :to="`/profile/${request.user_name}`">

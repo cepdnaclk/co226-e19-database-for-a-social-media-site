@@ -192,17 +192,17 @@ const submit = async () => {
     formdata.append('profile_picture', file.value)
 
     try {
-        await axios.post("/profile_picture/upload", formdata, {
+        const profpicURL = await axios.post("/profile_picture/upload", formdata, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
-
         await axios.post("/signup/final", {
             u_id: store.state.currentSignupUser,
             bio: bio.value,
             interests: interests.value,
-            affiliation: affiliation.value
+            affiliation: affiliation.value,
+            profile_picture: profpicURL.data.downloadURL
         })
 
         store.state.currentSignupUser = ""
