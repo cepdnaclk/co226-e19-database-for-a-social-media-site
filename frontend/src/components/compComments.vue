@@ -21,6 +21,8 @@ import axios from "axios"
 import { onMounted, onUnmounted, ref, watch } from "vue"
 import { useStore } from "vuex"
 import compComment from "./compComment.vue"
+import io from "socket.io-client"
+
 
 const emits = defineEmits(['close'])
 const store = useStore()
@@ -31,6 +33,7 @@ const content = ref("")
 const comments = ref([])
 
 const getComments = (id) => {
+    comments.value = []
     axios.get(`/comment/get/${id}`, {
         retry: 3, // Number of retry attempts
         retryDelay: 1000, // Delay between retries in milliseconds
@@ -46,12 +49,10 @@ const getComments = (id) => {
 
 const sendComment = () => {
     axios.post(`/comment/add`, {
-        p_id: props.postId,
+        p_id: store.state.currComPost,
         content: content.value
     }).then(async () => {
         content.value = ""
-        comments.value = await getComments(store.state.currComPost)
-        emits('change')
     }).catch((err) => {
         store.commit("addError", err.response.data.error)
     })
@@ -59,6 +60,24 @@ const sendComment = () => {
 
 onMounted(() => {
     getComments(store.state.currComPost)
+
+    const socketCom = io('http://localhost:3011/comment'); // Change the URL to match your server and namespace
+
+    // Listen for new post event
+    socketCom.on('newComment', (PostId) => {
+        if (store.state.currComPost == PostId) {
+            getComments(PostId)
+        }
+    });
+
+    // Listen for deleted post event
+    socketCom.on('deleteComment', (PostId) => {
+        if (store.state.currComPost == PostId) {
+            console.log(comments.value)
+            getComments(PostId)
+            console.log(comments.value)
+        }
+    });
 })
 
 const autoResizeTextarea = ref(null);

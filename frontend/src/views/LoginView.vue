@@ -74,6 +74,7 @@ const login = async (e) => {
             router.push("/")
         })
         .catch((err) => {
+            console.log(err)
             store.commit("addError", err.response.data.error)
         })
 }

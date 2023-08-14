@@ -56,6 +56,7 @@ import { useStore } from 'vuex';
 import compLikeMenu from './compLikeMenu.vue';
 import compPostShare from './compPostShare.vue';
 import { useRouter } from 'vue-router';
+import io from "socket.io-client"
 
 const props = defineProps(['post'])
 const post = ref({})
@@ -133,6 +134,39 @@ const sharePost = () => {
 
 onMounted(async () => {
     await getPost()
+
+    const socket = io('http://localhost:3011/post-like'); // Change the URL to match your server and namespace
+
+    // Listen for new post event
+    socket.on('newPostLike', (PostId) => {
+        if (post.value.id == PostId) {
+            getPost()
+        }
+    });
+
+    // Listen for deleted post event
+    socket.on('deletePostLike', (PostId) => {
+        if (post.value.id == PostId) {
+            getPost()
+        }
+    });
+
+
+    const socketCom = io('http://localhost:3011/comment'); // Change the URL to match your server and namespace
+
+    // Listen for new post event
+    socketCom.on('newComment', (PostId) => {
+        if (post.value.id == PostId) {
+            getPost()
+        }
+    });
+
+    // Listen for deleted post event
+    socketCom.on('deletePostLike', (PostId) => {
+        if (post.value.id == PostId) {
+            getPost()
+        }
+    });
 })
 </script>
 
