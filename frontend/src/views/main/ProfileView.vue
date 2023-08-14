@@ -5,10 +5,13 @@
             <img class="prof-pic" :src="profile.profile_picture" alt="">
             <h4>{{ profile.first_name }} {{ profile.last_name }}</h4>
             <p class="uname">@{{ profile.user_name }}</p>
-            <button class="request" v-if="!profile.is_friend && (store.state.user.user_name != route.params.username)"
-                @click="">Send Request</button>
-            <button class="reject" v-else-if="profile.is_friend && (store.state.user.user_name != route.params.username)"
-                @click="">Unfriend</button>
+            <button class="request" v-if="!profile.is_friend && !profile.sent_request"
+                @click="sendRequest(profile.u_id)">Send
+                Request</button>
+            <button class="request cancel" v-else-if="!profile.is_friend && profile.sent_request"
+                @click="cancelRequest(profile.u_id, `${profile.first_name} ${profile.last_name}`)">Cancel Request</button>
+            <button class="reject" v-else-if="profile.is_friend"
+                @click="unfriend(profile.u_id, `${profile.first_name} ${profile.last_name}`)">Unfriend</button>
             <router-link to="/profile/edit-profile" class="request"
                 v-else-if="store.state.user.user_name == route.params.username">Edit
                 profile</router-link>
@@ -37,6 +40,7 @@ import { computed, onMounted, onUpdated, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import compPost from "@/components/compPost.vue";
+import io from "socket.io-client"
 
 const route = useRoute()
 const store = useStore()
@@ -75,9 +79,62 @@ const getPosts = async (id) => {
     }
 }
 
+const sendRequest = async (id) => {
+    try {
+        await axios.post("/friend_request/send", {
+            friend_id: id
+        })
+        store.commit("addSuccess", "Request sent")
+        profile.value = await getProfile()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const cancelRequest = async (id) => {
+    try {
+        await axios.delete("/friend_request/cancel", {
+            data: { friend_id: id }
+        })
+        store.commit("addSuccess", "Request canceled")
+        profile.value = await getProfile()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const unfriend = async (id, name) => {
+    try {
+        await axios.delete("/friend_request/unfriend", {
+            data: { friend_id: id }
+        })
+        store.commit("addSuccess", `You and ${name} no longer friends`)
+        profile.value = await getProfile()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
 onMounted(async () => {
     profile.value = await getProfile()
     posts.value = await getPosts(profile.value.u_id)
+
+    const socket = io('http://localhost:3011/post'); // Change the URL to match your server and namespace
+
+    // Listen for new post event
+    socket.on('newPost', (newPost) => {
+        console.log("added")
+        posts.value.unshift(newPost);
+    });
+
+    // Listen for deleted post event
+    socket.on('deletedPost', (deletedPostId) => {
+        posts.value = posts.value.filter(post => post.id !== deletedPostId);
+    });
+
 })
 
 watch(username, async () => {
@@ -114,6 +171,25 @@ watch(username, async () => {
     margin-top: 5px;
     font-weight: 500;
     color: #029432;
+}
+
+.left .request,
+.left .reject {
+    display: block;
+    padding: 0.5rem 1rem;
+    background: #2FA634;
+    color: white;
+    margin-top: 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+.left .request.cancel {
+    background: #555;
+}
+
+.left .reject {
+    background: #555;
 }
 
 .left ul {
@@ -191,6 +267,10 @@ watch(username, async () => {
         position: relative;
         min-height: 20vh;
         padding: 1rem;
+    }
+
+    .left .back {
+        width: max-content;
     }
 }
 </style>

@@ -281,13 +281,23 @@ h3 span {
     background: #2FA634;
 }
 
-@media screen and (max-width:769px) {
+@media screen and (max-width:500px) {
     .deck .card {
         display: grid;
         grid-template-rows: 1rem 1fr 1fr 1rem;
-        grid-template-columns: 1fr 2fr 2fr;
+        grid-template-columns: 3fr 2fr;
         min-height: 80px;
         padding: 0 1rem;
+        width: 100%;
+    }
+
+    .deck .card a {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-column: 1;
+        grid-row: 2/4;
+        gap: 0 1rem;
+        text-align: left;
     }
 
     .deck .card img {

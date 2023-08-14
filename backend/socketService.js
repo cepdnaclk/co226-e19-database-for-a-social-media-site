@@ -21,17 +21,15 @@ const initSocketIO = (httpServer) => {
 
   // Define namespaces and configure events
   namespaces.post = io.of("/post");
+  namespaces.postLike = io.of("/post-like");
+  namespaces.comment = io.of("/comment");
   // Add more namespaces if needed
 
   // Set up event handling for each namespace
   namespaces.post.on("connection", (socket) => {
-    console.log(`A user connected to /post namespace`);
-
-    // Handle Socket.IO events specific to the /post namespace
-    // socket.on('event', (data) => { ... });
-
+    console.log(`A user connected to real time conn`);
     socket.on("disconnect", () => {
-      console.log(`A user disconnected from /post namespace`);
+      console.log(`A user disconnected from real time conn`);
     });
   });
 
