@@ -57,7 +57,7 @@ const dob = computed(() => {
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
 
-    return `${profile.value.b_date} ${months[profile.value.b_month - 1]} ${profile.value.b_year}`;
+    return `${profile.value.b_date} ${months[profile.value.b_month]} ${profile.value.b_year}`;
 })
 
 const getProfile = async () => {

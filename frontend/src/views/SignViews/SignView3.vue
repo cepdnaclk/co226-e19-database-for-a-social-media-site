@@ -187,6 +187,7 @@ const interests = computed(() => {
 })
 
 const submit = async () => {
+    store.state.loading = true
     const formdata = new FormData()
     formdata.append('u_id', store.state.currentSignupUser)
     formdata.append('profile_picture', file.value)
@@ -212,6 +213,7 @@ const submit = async () => {
     catch (err) {
         store.commit("addError", err.response.data.error)
     }
+    store.state.loading = false
 }
 
 </script >

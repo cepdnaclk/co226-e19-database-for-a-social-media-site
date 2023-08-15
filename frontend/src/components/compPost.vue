@@ -162,7 +162,7 @@ onMounted(async () => {
     });
 
     // Listen for deleted post event
-    socketCom.on('deletePostLike', (PostId) => {
+    socketCom.on('deleteComment', (PostId) => {
         if (post.value.id == PostId) {
             getPost()
         }
