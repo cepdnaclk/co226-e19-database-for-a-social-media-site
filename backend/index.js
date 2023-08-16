@@ -50,8 +50,8 @@ const post = require("./post")(db); // route for post handling
 const post_like = require("./post_like")(db); // route for like handling related to posts
 const comment = require("./comment")(db); // route for comment handling related to posts
 const comment_like = require("./comment_like")(db); // route for like handling related to comments
-const displayProfile = require("./display_profile")(db);
-const mediaUpload = require("./media_upload")(server);
+const displayProfile = require("./display_profile")(db); // route for display profile
+const mediaUpload = require("./media_upload")(server); // route for media upload
 
 // Use the routes
 app.use("/login", login);
