@@ -12,8 +12,10 @@
                     </router-link>
                     has sent a friend request
                 </p>
-                <button class="btn accept" @click="acceptRequest(request.requester_id)">Accept</button>
-                <button class="btn reject" @click="rejectRequest(request.requester_id)">Delete</button>
+                <div class="btn-deck">
+                    <button class="btn accept" @click="acceptRequest(request.requester_id)">Accept</button>
+                    <button class="btn reject" @click="rejectRequest(request.requester_id)">Delete</button>
+                </div>
             </div>
         </div>
         <h3>Find your friends on <span>Peralink</span></h3>
@@ -334,14 +336,19 @@ h3 span {
     background: #2FA634;
 }
 
+.btn-deck {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 @media screen and (max-width:500px) {
     .deck .card {
-        display: grid;
-        grid-template-rows: 1rem 1fr 1fr 1rem;
-        grid-template-columns: 3fr 2fr;
-        min-height: 80px;
-        padding: 0 1rem;
-        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        box-shadow: 0 0 10px #ccc;
+        padding: 1rem 2rem;
     }
 
     .deck .card a {
@@ -373,6 +380,14 @@ h3 span {
         grid-column: 3;
         grid-row: 2/4;
         font-size: 0.8rem;
+        margin-left: auto;
+    }
+
+    .requests .request {
+        display: flex;
+        flex-direction: column;
+        margin: 1rem auto;
+        text-align: center;
     }
 }
 </style>

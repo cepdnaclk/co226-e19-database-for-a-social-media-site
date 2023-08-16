@@ -1,7 +1,7 @@
 <template>
     <div class="post-container">
         <transition name="fade" role="div" mode="in-out">
-            <img src="@/assets/post_placeholder.png" class="placeholder" v-if="!post.media" alt="">
+            <img src="@/assets/post_placeholder.png" class="placeholder" v-if="!post.id" alt="">
             <div class="post" v-else>
                 <div class="post-header">
                     <router-link :to="`/profile/${post.uname}`" class="profile">
@@ -19,9 +19,9 @@
                     </button>
                 </div>
                 <div class="post-text">
-                    <pre>{{ post.content }}</pre>
+                    <p>{{ post.content }}</p>
                 </div>
-                <div class="image-content">
+                <div class="image-content" v-if="post.media != ''">
                     <img v-if="post.m_type == 0" :src="post.media" alt="">
                     <video v-if="post.m_type == 1" :src="post.media" controls></video>
                     <comp-post-share v-if="post.m_type == 2" :post="post.media" />
@@ -34,7 +34,7 @@
                 <button class="post-footer" @click="viewComment">
                     <div class="likes" v-if="post.likeCount">
                         <div class="like-deck">
-                            <p v-for="(type, index) in post.likeTypes.slice(0, 3)" :key="index">
+                            <p v-for="( type, index ) in  post.likeTypes.slice(0, 3) " :key="index">
                                 {{ likes[type - 1] ? likes[type - 1].emoji : '' }}
                             </p>
                         </div>
@@ -174,6 +174,7 @@ onMounted(async () => {
 .post-container {
     position: relative;
     width: 100%;
+    min-height: 400px;
 }
 
 .placeholder {
@@ -252,6 +253,12 @@ onMounted(async () => {
 .post .post-text {
     padding: 1rem 1.5rem;
     font-weight: 300;
+    width: 100%;
+}
+
+.post .post-text p {
+    width: 100%;
+    white-space: pre-line;
 }
 
 .post .image-content {

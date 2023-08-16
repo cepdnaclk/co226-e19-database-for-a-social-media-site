@@ -28,7 +28,7 @@
         </div>
         <div class="right">
             <div class="post-deck">
-                <comp-post v-for="post in posts" :key="post.id" :post="post" />
+                <comp-post v-for="post in filteredPosts" :key="post.id" :post="post" />
                 <p style="color:#555" v-if="posts.length == 0">nothing to show here</p>
             </div>
         </div>
@@ -47,6 +47,10 @@ const route = useRoute()
 const store = useStore()
 const username = computed(() => {
     return route.params.username ? route.params.username : username.value
+})
+const viewCondArray = ref([])
+const filteredPosts = computed(() => {
+    return posts.value.filter((post, index) => viewCondArray.value[index]);
 })
 const profile = ref({})
 const posts = ref([])
@@ -132,8 +136,25 @@ const unfriend = async (id, name) => {
 }
 
 onMounted(async () => {
-    profile.value = await getProfile()
-    posts.value = await getPosts(profile.value.u_id)
+    try {
+        profile.value = await getProfile()
+        posts.value = await getPosts(profile.value.u_id)
+    }
+    catch (err) {
+        console.log(err)
+    }
+
+
+    viewCondArray.value = Array.from({ length: posts.value.length }, () => false)
+    viewCondArray.value[0] = true
+    viewCondArray.value[1] = true
+
+    window.addEventListener("scroll", () => {
+        const scrollFactor = parseInt(window.scrollY / window.innerHeight)
+        const index = scrollFactor * 2
+        viewCondArray.value[index] = true
+        viewCondArray.value[index + 1] = true
+    });
 
     const socket = io('https://peralink-backend.onrender.com/post'); // Change the URL to match your server and namespace
 
