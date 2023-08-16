@@ -19,5 +19,7 @@ const props = defineProps(['msg'])
     min-width: 300px;
     color: white;
     background: green;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
 }
 </style>

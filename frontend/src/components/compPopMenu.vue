@@ -10,15 +10,18 @@
             <router-link :to="`/profile/${store.state.user.user_name}`" class="btn">
                 View Profile
             </router-link>
+            <button class="btn logout" @click="logout">Log out</button>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onUpdated, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 const store = useStore()
+const router = useRouter()
 
 const user = ref(store.state.user)
 
@@ -26,6 +29,15 @@ const showMenu = ref(false)
 const toggleMenu = () => {
     showMenu.value = !showMenu.value
 }
+
+const logout = () => {
+    store.commit("setLogout")
+    router.push("/login")
+}
+
+onUpdated(() => {
+    user.value = store.state.user
+})
 </script>
 
 <style scoped>
@@ -86,6 +98,12 @@ const toggleMenu = () => {
 
 .mobile {
     display: none;
+}
+
+.menu .logout {
+    font-size: 1rem;
+    background: #e7530e;
+    margin-top: 7px;
 }
 
 @media screen and (max-width:769px) {

@@ -5,6 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const router = express.Router();
+const auth = require("./authMiddleware")
 
 // Define a route for profile picture handling with database connection
 const route = (db, server) => {
@@ -72,11 +73,11 @@ const route = (db, server) => {
   // PUT route to update an old profile picture
   router.put(
     "/update",
-    userExists,
+    auth,
     upload.single("profile_picture"),
     (req, res) => {
-      const userId = req.body.u_id; // Assuming the user ID is provided in the request body
-      const imagePath = req.file.path;
+      const userId = req.user.u_id; // Assuming the user ID is provided in the request body
+      const imagePath = server + req.file.path.replace(/\\/g, "/").replace("public/", "");
       db.query(
         "UPDATE user SET profile_picture = ? WHERE u_id = ?",
         [imagePath, userId],
@@ -93,8 +94,8 @@ const route = (db, server) => {
   );
 
   // DELETE route to delete a profile picture
-  router.delete("/delete", userExists, (req, res) => {
-    const userId = req.body.u_id; // Assuming the user ID is provided in the request body
+  router.delete("/delete", auth, (req, res) => {
+    const userId = req.user.u_id; // Assuming the user ID is provided in the request body
     db.query(
       "SELECT profile_picture FROM user WHERE u_id = ?",
       [userId],
@@ -102,7 +103,7 @@ const route = (db, server) => {
         if (err) {
           return res.status(500).json({ error: "Database error" });
         }
-        const imagePath = results[0].profile_picture;
+        const imagePath = results[0].profile_picture.replace(`${server}`, `${__dirname}`);
         fs.unlink(imagePath, (err) => {
           if (err) {
             return res

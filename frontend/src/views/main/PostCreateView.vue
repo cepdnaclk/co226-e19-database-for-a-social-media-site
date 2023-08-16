@@ -17,10 +17,11 @@
                     <textarea ref="autoResizeTextarea" v-model="content" placeholder="Add a caption"></textarea>
                 </div>
                 <div class="media-content">
-                    <img v-if="!m_type"
+                    <img v-if="m_type == 0"
                         :src="filePreview || 'https://www.bluecoatacademy.org/wp-content/themes/absolutebyte/assets/images/placeholder-image.jpg'"
                         alt="">
-                    <video v-else :src="filePreview" controls></video>
+                    <video v-if="m_type == 1" :src="filePreview" controls></video>
+                    <comp-post-share v-if="m_type == 2 && post" :post="post" />
                 </div>
                 <div class="post-actions">
                     <button><img src="@/assets/heart.png" alt=""></button>
@@ -53,12 +54,14 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import compPostShare from "@/components/compPostShare.vue";
 
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 
 
@@ -69,9 +72,11 @@ const uname = ref(user.user_name)
 const profpic = ref(user.profile_picture)
 const content = ref("")
 const file = ref("")
+const fileURL = ref("")
 const filePreview = ref()
 const m_type = ref(0)
 const visibility = ref("")
+const post = ref("")
 
 
 // content input auto resize
@@ -112,7 +117,6 @@ const postSend = async () => {
     formdata.append('media', file.value)
 
     try {
-        let fileURL = ""
         const date = new Date(Date.now())
 
         if (file.value) {
@@ -122,21 +126,12 @@ const postSend = async () => {
                 }
             })
 
-            fileURL = res.data.mediaURL;
+            fileURL.value = res.data.mediaURL;
         }
 
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        const formattedTime = `${hours}:${minutes}:${seconds}`;
-
         await axios.post("/post/add", {
-            p_time: formattedTime,
-            p_date: date.getDate(),
-            p_month: date.getMonth(),
-            p_year: date.getFullYear(),
             content: content.value,
-            media: fileURL,
+            media: fileURL.value,
             m_type: m_type.value,
             private: visibility.value ? 1 : 0
         })
@@ -147,6 +142,15 @@ const postSend = async () => {
         store.commit("addError", err.response.data.error)
     }
 }
+
+onMounted(() => {
+    if (route.query.post) {
+        post.value = route.query.post
+        m_type.value = 2
+        fileURL.value = post.value
+        adjustTextareaHeight()
+    }
+})
 
 </script>
 
@@ -238,11 +242,17 @@ const postSend = async () => {
     outline: none;
 }
 
+.post .media-content {
+    background: #ddd;
+    border: 5px solid white;
+}
+
 .post .media-content img,
 .post .media-content video {
     padding: 1rem 0 0;
     width: 100%;
     object-fit: contain;
+    max-height: 400px;
 }
 
 .post .post-actions {

@@ -1,79 +1,84 @@
-///////////////////////////////////// comment_like.js
-
 const express = require("express");
 const router = express.Router();
+const auth = require("./authMiddleware");
 
-// Define a route for like handling related to posts with database connection
 const route = (db) => {
-// Middleware to check if the user exists
-const userExists = (req, res, next) => {
-  const userId = req.body.u_id; // Assuming the user ID is provided in the request body
-  db.query("SELECT u_id FROM user WHERE u_id = ?", [userId], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Database error" });
-    }
-    if (results.length === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    next();
-  });
-};
-
-// Middleware to check if the comment exists
-const commentExists = (req, res, next) => {
-  const commentId = req.body.c_id; // Assuming the post ID is provided in the request body
-  db.query("SELECT p_id FROM post WHERE p_id = ?", [commentId], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Database error" });
-    }
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-    next();
-  });
-};
-
-// POST route to add a like to a post
-router.post("/add", userExists, commentExists, (req, res) => {
-  const userId = req.body.u_id; // Assuming the user ID is provided in the request body
-  const commentId = req.body.c_id; // Assuming the post ID is provided in the request body
-  const likeTypeId = req.body.liketype_id; // Assuming the like type ID is provided in the request body
-
-  const like = {
-    l_time: new Date().toISOString().slice(11, 19), // Get current time in HH:mm:ss format
-    l_date: new Date().getDate(),
-    l_month: new Date().getMonth() + 1, // Months are 0-indexed, so  add 1
-    l_year: new Date().getFullYear(),
-    liketype_id: likeTypeId,
-    user_id: userId,
-    comment_id: commentId,
+  const commentExists = (req, res, next) => {
+    const commentId = req.body.comment_id || req.query.comment_id;
+    db.query(
+      "SELECT * FROM comment WHERE c_id = ?",
+      [commentId],
+      (err, results) => {
+        if (err) {
+          return res.status(500).json({ error: "Database error" });
+        }
+        if (results.length === 0) {
+          return res.status(404).json({ error: "Comment not found" });
+        }
+        next();
+      }
+    );
   };
 
-  db.query("INSERT INTO post_like SET ?", like, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.status(200).json({ message: "Like added to post successfully" });
+  router.get("/", auth, commentExists, (req, res) => {
+    const userId = req.user.u_id;
+    const commentId = req.query.comment_id;
+
+    db.query(
+      "SELECT liketype_id FROM comment_like WHERE user_id = ? AND comment_id = ?",
+      [userId, commentId],
+      (err, results) => {
+        if (err) {
+          return res.status(500).json({ error: "Database error" });
+        }
+        if (!results[0]) return;
+        res.status(200).json({ like: results[0].liketype_id });
+      }
+    );
   });
-});
 
-// DELETE route to remove a like from a post
-router.delete("/delete", userExists, commentExists, (req, res) => {
-  const userId = req.body.u_id; // Assuming the user ID is provided in the request body
-  const commentId = req.body.c_id; // Assuming the post ID is provided in the request body
+  router.post("/add", auth, commentExists, (req, res) => {
+    const userId = req.user.u_id;
+    const commentId = req.body.comment_id;
+    const likeTypeId = req.body.liketype_id;
 
-  db.query(
-    "DELETE FROM post_like WHERE user_id = ? AND post_id = ?",
-    [userId, commentId],
-    (err, results) => {
+    const like = {
+      l_time: new Date().toISOString().slice(11, 19),
+      l_date: new Date().getDate(),
+      l_month: new Date().getMonth() + 1,
+      l_year: new Date().getFullYear(),
+      liketype_id: likeTypeId,
+      user_id: userId,
+      comment_id: commentId,
+    };
+
+    db.query("INSERT INTO comment_like SET ?", like, (err, results) => {
       if (err) {
         return res.status(500).json({ error: "Database error" });
       }
-      res.status(200).json({ message: "Like removed from post successfully" });
-    }
-  );
-});
-return router;
+      res.status(200).json({ message: "Like added to comment successfully" });
+    });
+  });
+
+  router.delete("/delete", auth, commentExists, (req, res) => {
+    const userId = req.user.u_id;
+    const commentId = req.body.comment_id;
+
+    db.query(
+      "DELETE FROM comment_like WHERE user_id = ? AND comment_id = ?",
+      [userId, commentId],
+      (err, results) => {
+        if (err) {
+          return res.status(500).json({ error: "Database error" });
+        }
+        res
+          .status(200)
+          .json({ message: "Like removed from comment successfully" });
+      }
+    );
+  });
+
+  return router;
 };
 
 module.exports = route;

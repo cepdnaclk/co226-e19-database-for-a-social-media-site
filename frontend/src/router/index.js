@@ -30,7 +30,15 @@ const routes = [
         name: "profile",
         component: () =>
           import(
-            /* webpackChunkName: "dash" */ "../views/main/ProfileView.vue"
+            /* webpackChunkName: "prof" */ "../views/main/ProfileView.vue"
+          ),
+      },
+      {
+        path: "/profile/edit-profile",
+        name: "editprofile",
+        component: () =>
+          import(
+            /* webpackChunkName: "editprof" */ "../views/main/EditProfileView.vue"
           ),
       },
       {

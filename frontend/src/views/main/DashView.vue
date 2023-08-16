@@ -4,7 +4,7 @@
             <div class="flex-box">
                 <div class="post-deck">
                     <comp-post v-for="post in posts" :key="post.id" :post="post" />
-                    <p style="color:#555" v-if="posts.length == 0">nothing to show here</p>
+                    <p style="color:#555" v-if="posts && posts.length == 0">nothing to show here</p>
                 </div>
                 <div class="comm-deck">
                     <div class="friends">
@@ -202,7 +202,7 @@ onMounted(async () => {
     }
 
     .comm-deck {
-        position: fixed;
+        display: none;
     }
 }
 </style>

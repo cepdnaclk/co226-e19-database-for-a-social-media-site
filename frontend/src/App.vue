@@ -7,15 +7,19 @@
       <comp-error-alert v-if="store.state.errList.length" :msg="store.state.errList[0]" />
     </transition>
     <router-view />
+    <comp-comments v-if="store.state.showComment" @close="store.commit('showComments')" />
   </div>
 </template>
 <script setup>
 import compSuccessAlert from './components/compSuccessAlert.vue';
 import CompErrorAlert from './components/compErrorAlert.vue';
+import compComments from './components/compComments.vue'
 import { useStore } from 'vuex';
-import axios from 'axios';
+import { ref } from 'vue';
 
 const store = useStore()
+
+const showComment = ref(false)
 </script>
 
 <style>
@@ -72,5 +76,15 @@ button {
 
 .back img {
   height: 25px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+  position: absolute;
+}
+
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

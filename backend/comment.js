@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("./authMiddleware");
+const timePresent = require("./timePresent");
 
 // Define a route for like and comment handling related to posts with database connection
 const route = (db) => {
@@ -12,9 +13,11 @@ const route = (db) => {
       [postId],
       (err, results) => {
         if (err) {
+          console.log(err);
           return res.status(500).json({ error: "Database error" });
         }
         if (results.length === 0) {
+          console.log(err);
           return res.status(404).json({ error: "Post not found" });
         }
         next();
@@ -24,23 +27,50 @@ const route = (db) => {
 
   router.get("/get/:postid", (req, res) => {
     const postId = req.params.postid; // Get the post ID from the route parameter
+    console.log(postId);
 
-    // Query to fetch comments for the specified post
     db.query(
-      "SELECT c.*, u.user_name, u.first_name, u.last_name, u.profile_picture " +
-        "FROM comment AS c " +
-        "LEFT JOIN user AS u ON u.u_id = c.user_id " +
-        "WHERE c.post_id = ?",
+      `
+      SELECT
+        c.*,
+        u.user_name,
+        u.first_name,
+        u.last_name,
+        u.profile_picture,
+        IFNULL(cl.likeCount, 0) AS likeCount,
+        IFNULL(lt.liketype_ids, '') AS liketype_ids
+      FROM comment AS c
+      LEFT JOIN user AS u ON u.u_id = c.user_id
+      LEFT JOIN (
+        SELECT comment_id, COUNT(liketype_id) AS likeCount
+        FROM comment_like
+        GROUP BY comment_id
+      ) AS cl ON cl.comment_id = c.c_id
+      LEFT JOIN (
+        SELECT comment_id, GROUP_CONCAT(liketype_id ORDER BY likeCount DESC) AS liketype_ids
+        FROM (
+          SELECT comment_id, liketype_id, COUNT(liketype_id) AS likeCount
+          FROM comment_like
+          GROUP BY comment_id, liketype_id
+        ) AS temp
+        GROUP BY comment_id
+      ) AS lt ON lt.comment_id = c.c_id
+      WHERE c.post_id = ?;
+    `,
       [postId],
       (err, results) => {
         if (err) {
+          console.log(err);
           return res.status(500).json({ error: "Database error" });
         }
-        if (results.length == 1 && results[0].c_id == null) return;
+        if (results.length === 0) {
+          console.log(err);
+          return res.status(404).json({ error: "Comment not found" });
+        }
 
-        const comments = results.map((com) => ({
+        const comment = results.map((com) => ({
           id: com.c_id,
-          date: getDateInfo(
+          date: timePresent(
             com.c_year,
             com.c_month,
             com.c_date,
@@ -52,11 +82,13 @@ const route = (db) => {
           fname: com.first_name,
           lname: com.last_name,
           propic: com.profile_picture,
+          likeCount: com.likeCount,
+          liketypes: com.liketype_ids.split(",").slice(0, 3), // Take the first 3 liketype_ids
           // any other required properties
         }));
 
-        // Return the comments for the specified post
-        res.status(200).json(comments);
+        // Return the comment details
+        res.status(200).json(comment);
       }
     );
   });
@@ -66,9 +98,8 @@ const route = (db) => {
     const userId = req.user.u_id;
     const postId = req.body.p_id;
     const content = req.body.content;
-
     const comment = {
-      c_time: new Date().toISOString().slice(11, 19), // Get current time in HH:mm:ss format
+      c_time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
       c_date: new Date().getDate(),
       c_month: new Date().getMonth() + 1,
       c_year: new Date().getFullYear(),
@@ -95,6 +126,7 @@ const route = (db) => {
       [commentId],
       (err, results) => {
         if (err) {
+          console.log(err);
           return res.status(500).json({ error: "Database error" });
         }
         res
@@ -106,53 +138,5 @@ const route = (db) => {
 
   return router;
 };
-
-function getDateInfo(
-  inputYear,
-  inputMonth,
-  inputDay,
-  inputHours,
-  inputMinutes
-) {
-  const currentDate = new Date();
-  const targetDate = new Date(
-    inputYear,
-    inputMonth - 1,
-    inputDay,
-    inputHours,
-    inputMinutes
-  );
-
-  const timeDifference = currentDate - targetDate;
-  const minuteDifference = Math.floor(timeDifference / (1000 * 60));
-  const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-  const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-  if (minuteDifference < 60) {
-    return `${minuteDifference} min ago`;
-  } else if (hourDifference < 24) {
-    return `${hourDifference} h ago`;
-  } else if (dayDifference < 30) {
-    return `${dayDifference} d ago`;
-  } else {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const targetMonthName = monthNames[inputMonth - 1];
-    return `${targetMonthName} ${inputDay}, ${inputYear}`;
-  }
-}
 
 module.exports = route;

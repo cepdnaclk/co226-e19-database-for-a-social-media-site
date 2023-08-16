@@ -206,6 +206,7 @@ const submit = async () => {
         })
 
         store.state.currentSignupUser = ""
+        store.commit("addSuccess", "Account Created")
         router.push("/login")
     }
     catch (err) {

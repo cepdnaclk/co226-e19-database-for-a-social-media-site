@@ -9,6 +9,8 @@ export default createStore({
     token: "",
     user: Object,
     currentSignupUser: "",
+    showComment: false,
+    currComPost: 0,
   },
   getters: {},
   mutations: {
@@ -28,12 +30,17 @@ export default createStore({
       state.token = payload.token;
       state.isAuthenticated = true;
       state.user = payload.user;
-      axios.defaults.headers = { Authorization: payload.token };
+      axios.defaults.headers.common["Authorization"] = payload.token;
     },
     setLogout(state) {
       state.token = "";
       state.user = "";
       state.isAuthenticated = false;
+      axios.defaults.headers.common["Authorization"] = "";
+    },
+    showComments(state) {
+      console.log("store");
+      state.showComment = !state.showComment;
     },
   },
   actions: {},
@@ -61,7 +68,7 @@ function loadStateFromLocalStorage() {
   if (stateJson) {
     const state = JSON.parse(stateJson);
     if (state.token != "") {
-      axios.defaults.headers = { Authorization: state.token };
+      axios.defaults.headers.common["Authorization"] = state.token;
     }
     state.errList = [];
     state.sucList = [];

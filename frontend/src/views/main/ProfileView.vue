@@ -9,15 +9,16 @@
                 @click="">Send Request</button>
             <button class="reject" v-else-if="profile.is_friend && (store.state.user.user_name != route.params.username)"
                 @click="">Unfriend</button>
-            <button class="request" v-else-if="store.state.user.user_name = route.params.username" @click="">Edit
-                profile</button>
+            <router-link to="/profile/edit-profile" class="request"
+                v-else-if="store.state.user.user_name == route.params.username">Edit
+                profile</router-link>
             <ul>
-                <li><img src="../../assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
-                <li v-if="profile.sex"><img src="../../assets/man.png" alt=""> Male</li>
-                <li v-else><img src="../../assets/woman.png" alt="">Female</li>
-                <li><img src="../../assets/birthday-cake.png" alt="">{{ dob || "not set" }}</li>
-                <li><img src="../../assets/pin.png" alt="">{{ profile.location || "not set" }}</li>
-                <li><img src="../../assets/suitcase.png" alt="">{{ profile.affiliation || "not set" }}</li>
+                <li><img src="@/assets/Message_light.png" alt="">{{ profile.email || "not set" }}</li>
+                <li v-if="profile.sex"><img src="@/assets/man.png" alt=""> Male</li>
+                <li v-else><img src="@/assets/woman.png" alt="">Female</li>
+                <li><img src="@/assets/birthday-cake.png" alt="">{{ dob || "not set" }}</li>
+                <li><img src="@/assets/pin.png" alt="">{{ profile.location || "not set" }}</li>
+                <li><img src="@/assets/suitcase.png" alt="">{{ profile.affiliation || "not set" }}</li>
                 <p style="margin-block: 2rem 4rem;">{{ profile.bio }}</p>
             </ul>
         </div>
@@ -32,14 +33,16 @@
 
 <script setup>
 import axios from "axios";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUpdated, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import compPost from "@/components/compPost.vue";
 
 const route = useRoute()
 const store = useStore()
-const username = route.params.username
+const username = computed(() => {
+    return route.params.username ? route.params.username : username.value
+})
 const profile = ref({})
 const posts = ref([])
 
@@ -54,7 +57,7 @@ const dob = computed(() => {
 
 const getProfile = async () => {
     try {
-        const res = await axios.get(`/profile/${username}`)
+        const res = await axios.get(`/profile/${username.value}`)
         return res.data
     }
     catch (err) {
@@ -65,7 +68,6 @@ const getProfile = async () => {
 const getPosts = async (id) => {
     try {
         const result = await axios.get(`/post_feed/profile/${id}`);
-        console.log(result.data)
         return result.data
     }
     catch (err) {
@@ -74,6 +76,11 @@ const getPosts = async (id) => {
 }
 
 onMounted(async () => {
+    profile.value = await getProfile()
+    posts.value = await getPosts(profile.value.u_id)
+})
+
+watch(username, async () => {
     profile.value = await getProfile()
     posts.value = await getPosts(profile.value.u_id)
 })
@@ -150,6 +157,8 @@ onMounted(async () => {
     margin-top: 1rem;
     font-size: 1rem;
     border-radius: 10px;
+    text-decoration: none;
+    width: max-content;
 }
 
 .reject {
@@ -169,6 +178,8 @@ onMounted(async () => {
         padding: 3rem 0 2rem;
         position: relative;
         margin: auto;
+        height: auto;
+        overflow-y: hidden;
     }
 
     .left ul li {

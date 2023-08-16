@@ -1,17 +1,39 @@
 <template>
     <div class="container">
-        <h3>Connect with your friends on <span>Peralink</span></h3>
+        <div class="requests" v-if="requests.length">
+            <h3>Friend Requests</h3>
+            <div class="request" v-for="(request, index) in requests" :key="index">
+                <router-link class="profpic" :to="`/profile/${request.user_name}`">
+                    <img :src="request.profile_picture" alt="">
+                </router-link>
+                <p>
+                    <router-link :to="`/profile/${request.user_name}`">
+                        {{ request.first_name }} {{ request.last_name }}
+                    </router-link>
+                    has sent a friend request
+                </p>
+                <button class="btn accept" @click="acceptRequest(request.requester_id)">Accept</button>
+                <button class="btn reject" @click="rejectRequest(request.requester_id)">Delete</button>
+            </div>
+        </div>
+        <h3>Find your friends on <span>Peralink</span></h3>
         <div class="search">
             <input type="text" placeholder="search people" v-model="search">
         </div>
         <div class="deck">
-            <router-link :to="`profile/${user.user_name}`" class="card" v-for="(user, index) in users" :key="index">
-                <img :src="user.profile_picture" alt="" class="prof-pic">
-                <h4>{{ user.first_name }} {{ user.last_name }}</h4>
-                <p>@{{ user.user_name }}</p>
-                <button class="request" v-if="!user.is_friend" @click="">Send Request</button>
-                <button class="reject" v-else @click="">Unfriend</button>
-            </router-link>
+            <div class="card" v-for="(user, index) in users" :key="index">
+                <router-link :to="`profile/${user.user_name}`">
+                    <img :src="user.profile_picture" alt="" class="prof-pic">
+                    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p>@{{ user.user_name }}</p>
+                </router-link>
+                <button class="request" v-if="!user.is_friend && !user.sent_request" @click="sendRequest(user.u_id)">Send
+                    Request</button>
+                <button class="request cancel" v-else-if="!user.is_friend && user.sent_request"
+                    @click="cancelRequest(user.u_id, `${user.first_name} ${user.last_name}`)">Cancel Request</button>
+                <button class="reject" v-else
+                    @click="unfriend(user.u_id, `${user.first_name} ${user.last_name}`)">Unfriend</button>
+            </div>
         </div>
     </div>
 </template>
@@ -26,14 +48,11 @@ const loading = ref(false)
 const store = useStore()
 
 const users = ref([])
+const requests = ref([])
 
 watch(search, async () => {
     const list = await getUsers(search.value.length > 0 ? search.value : "%")
     users.value = list
-})
-
-onMounted(async () => {
-    users.value = await getUsers("%")
 })
 
 const getUsers = async (query) => {
@@ -46,9 +65,89 @@ const getUsers = async (query) => {
         return response.data
     }
     catch (err) {
-        store.commit("addError", err)
+        store.commit("addError", err.response.data.error)
     }
 }
+
+const getRequest = async () => {
+    try {
+        const res = await axios.get("/friend_request/")
+        return res.data
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const sendRequest = async (id) => {
+    try {
+        await axios.post("/friend_request/send", {
+            friend_id: id
+        })
+        store.commit("addSuccess", "Request sent")
+        users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const cancelRequest = async (id) => {
+    try {
+        await axios.delete("/friend_request/cancel", {
+            data: { friend_id: id }
+        })
+        store.commit("addSuccess", "Request canceled")
+        users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const acceptRequest = async (id, name) => {
+    try {
+        await axios.post("/friend_request/accept", {
+            friend_id: id
+        })
+        store.commit("addSuccess", `You and ${name} friends`)
+        users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+        requests.value = await getRequest()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const rejectRequest = async (id) => {
+    try {
+        await axios.delete("/friend_request/reject", {
+            data: { friend_id: id }
+        })
+        requests.value = await getRequest()
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+const unfriend = async (id, name) => {
+    try {
+        await axios.delete("/friend_request/unfriend", {
+            data: { friend_id: id }
+        })
+        store.commit("addSuccess", `You and ${name} no longer friends`)
+        users.value = await getUsers(search.value.length > 0 ? search.value : "%")
+    }
+    catch (err) {
+        store.commit("addError", err.response.data.error)
+    }
+}
+
+onMounted(async () => {
+    users.value = await getUsers("%")
+    requests.value = await getRequest()
+})
 </script>
 
 <style scoped>
@@ -90,8 +189,12 @@ h3 span {
     flex-direction: column;
     align-items: center;
     padding: 2rem 1rem;
+}
+
+.deck .card a {
     text-decoration: none;
     color: #222;
+    text-align: center;
 }
 
 .deck .card img {
@@ -124,8 +227,58 @@ h3 span {
     border-radius: 10px;
 }
 
+.deck .card .request.cancel {
+    background: #555;
+}
+
 .deck .card .reject {
     background: #555;
+}
+
+.requests {
+    margin-top: 4rem;
+}
+
+.requests .request {
+    width: 90%;
+    margin: auto;
+    box-shadow: 0 0 5px #00000033;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 40px auto max-content max-content;
+    gap: 1rem;
+    align-items: center;
+}
+
+.requests .request .profpic {
+    height: 40px;
+    width: 40px;
+}
+
+.requests .request .profpic img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    outline: 3px solid #2FA634;
+    object-fit: cover;
+}
+
+.requests .request a {
+    font-weight: 800;
+    color: #222;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+}
+
+.requests .request .btn {
+    padding: 0.5rem 1rem;
+    background: #555;
+    color: white;
+    border-radius: 5px;
+}
+
+.requests .request .btn.accept {
+    background: #2FA634;
 }
 
 @media screen and (max-width:769px) {
