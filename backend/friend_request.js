@@ -5,7 +5,7 @@ const router = express.Router();
 const db = require("./index"); // Assuming the database connection is in index.js
 const auth = require("./authMiddleware");
 const timePresent = require("./timePresent");
-const socketService = require("./socketService");
+const socketService = require("./socketService"); // define web socket
 
 router.get("/", auth, (req, res) => {
   const requestee = req.user.u_id;
