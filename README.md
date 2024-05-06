@@ -1,6 +1,6 @@
 # PeraLink
 
-PeraLink is a social media site that aims to connect people and foster meaningful connections in the digital world.
+Peralink is a social media platform designed for fostering meaningful connections within the Peradinya University community
 
 ## Features
 
